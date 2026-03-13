@@ -3,49 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Rekomendasi - Kopi GERD</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Daftar Rekomendasi - Sistem Rekomendasi Kopi GERD</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="header">
-        <h1>Sistem Rekomendasi Kopi Aman Lambung</h1>
-        <a href="index.html" class="btn-logout" style="color: white; text-decoration: underline; font-size: 14px;">Logout</a>
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                
+                <div class="header-actions">
+                    <a href="testlanding.html" class="btn btn-out">Logout</a>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <main class="container" style="flex-direction: column; align-items: stretch;">
-        <div class="info-text" style="background-color: #f39c12; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-            <p><strong>Rekomendasi Coffee Shop</strong> (Urutan Teratas adalah Coffee Shop yang Memiliki Menu Aman yang Paling Banyak)</p>
+    <section class="hero" style="padding: 0;">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container recommendation-wrapper">
+            
+            <div class="recommendation-header">
+                <h1>Rekomendasi Coffee Shop</h1>
+                <p>💡 <strong>Info:</strong> Urutan teratas adalah Coffee Shop yang memiliki menu aman untuk lambung paling banyak.</p>
+            </div>
+
+            <div class="shops-grid">
+                
+                <div class="shop-card">
+                    <div class="shop-card-header">
+                        <h3>Coffee Shop A</h3>
+                    </div>
+                    <div class="shop-card-image">
+                        <div class="rank-badge">#1 Paling Aman</div>
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop A">
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                    </div>
+                </div>
+
+                <div class="shop-card">
+                    <div class="shop-card-header">
+                        <h3>Coffee Shop B</h3>
+                    </div>
+                    <div class="shop-card-image">
+                        <div class="rank-badge" style="background-color: var(--secondary);">#2 Aman</div>
+                        <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop B">
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                    </div>
+                </div>
+
+                <div class="shop-card">
+                    <div class="shop-card-header">
+                        <h3>Coffee Shop C</h3>
+                    </div>
+                    <div class="shop-card-image">
+                        <div class="rank-badge" style="background-color: var(--accent);">#3 Cukup Aman</div>
+                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop C">
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                    </div>
+                </div>
+
+                <div class="shop-card">
+                    <div class="shop-card-header">
+                        <h3>Coffee Shop A</h3>
+                    </div>
+                    <div class="shop-card-image">
+                        <div class="rank-badge">#1 Paling Aman</div>
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop A">
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                    </div>
+                </div>
+
+                <div class="shop-card">
+                    <div class="shop-card-header">
+                        <h3>Coffee Shop B</h3>
+                    </div>
+                    <div class="shop-card-image">
+                        <div class="rank-badge" style="background-color: var(--secondary);">#2 Aman</div>
+                        <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop B">
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                    </div>
+                </div>
+
+                <div class="shop-card">
+                    <div class="shop-card-header">
+                        <h3>Coffee Shop C</h3>
+                    </div>
+                    <div class="shop-card-image">
+                        <div class="rank-badge" style="background-color: var(--accent);">#3 Cukup Aman</div>
+                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop C">
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <div class="shop-grid">
-            <div class="shop-card">
-                <h3>Aote Coffee</h3>
-                <div class="shop-image">
-                    <p>GAMBAR</p>
-                </div>
-                <a href="#" class="btn-masuk" style="display: block; text-align: center; text-decoration: none; margin-top: 15px;">Lihat Menu</a>
-            </div>
-
-            <div class="shop-card">
-                <h3>Kopi Kenangan</h3>
-                <div class="shop-image">
-                    <p>GAMBAR</p>
-                </div>
-                <a href="#" class="btn-masuk" style="display: block; text-align: center; text-decoration: none; margin-top: 15px;">Lihat Menu</a>
-            </div>
-
-            <div class="shop-card">
-                <h3>Janji Jiwa</h3>
-                <div class="shop-image">
-                    <p>GAMBAR</p>
-                </div>
-                <a href="#" class="btn-masuk" style="display: block; text-align: center; text-decoration: none; margin-top: 15px;">Lihat Menu</a>
-            </div>
+    <footer>
+        <div class="container">
+            <p>Informasi Seputar Website &copy; 2026 - Skripsi Universitas Pelita Harapan Medan</p>
         </div>
-    </main>
-
-    <footer class="footer">
-        <p>Sistem Rekomendasi Kopi Aman Lambung</p>
     </footer>
+
+    <script>
+        // Header Scroll Effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -162,6 +162,19 @@ nav a:hover {
     color: white;
 }
 
+.btn-out {
+    background-color: transparent;
+    color: #ef4444;
+    border: 2px solid #ef4444;
+    border-radius: 20px;
+    padding: 8px 20px;
+}
+
+.btn-out:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
 .btn-lg {
     padding: 14px 32px;
     font-size: 16px;
@@ -553,6 +566,125 @@ footer {
 .form-input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(82, 182, 154, 0.1); /* Warna primary dengan transparansi */
+}
+
+/* Daftar Rekomendasi */
+.recommendation-wrapper {
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 64px - 100px);
+}
+
+.recommendation-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 48px;
+}
+
+.recommendation-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 16px;
+}
+
+.recommendation-header p {
+    font-size: 16px;
+    color: var(--muted-foreground);
+    background-color: var(--muted);
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid var(--border);
+}
+
+/* Grid untuk Card Coffee Shop */
+.shops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Desain Card Coffee Shop */
+.shop-card {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-light);
+}
+
+/* Bagian Atas Card (Nama Toko) */
+.shop-card-header {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+}
+
+.shop-card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--foreground);
+    margin: 0;
+}
+
+/* Bagian Tengah Card (Gambar) */
+.shop-card-image {
+    width: 100%;
+    height: 200px;
+    background-color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.shop-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.shop-card:hover .shop-card-image img {
+    transform: scale(1.05); /* Efek zoom tipis saat di-hover */
+}
+
+/* Lencana (Badge) Peringkat di atas gambar */
+.rank-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: var(--primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Bagian Bawah Card (Tombol) */
+.shop-card-footer {
+    padding: 20px;
+    text-align: center;
+    background-color: var(--background);
+    border-top: 1px solid var(--border);
+    margin-top: auto; /* Mendorong footer selalu ke bawah */
 }
 
 /* Responsive Design */
