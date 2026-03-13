@@ -3,36 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Rekomendasi Kopi GERD</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Landing - Sistem Rekomendasi Kopi GERD</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="header">
-        <h1>Sistem Rekomendasi Kopi Aman Lambung</h1>
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                
+                <nav>
+                    <a href="#gerd-cards">GERD (Layout Kartu)</a>
+                    <a href="#gerd-steps">GERD (Layout Step)</a>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-primary" style="border-radius: 20px; padding: 10px 20px;">Sign In</a>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#gerd-cards">GERD (Layout Kartu)</a>
+            <a href="#gerd-steps">GERD (Layout Step)</a>
+        </div>
     </header>
 
-    <main class="container">
-        <section class="left-column">
-            <div class="image-placeholder">
-                <p>Contoh Gambar Tampilan Sistem Rekomendasi</p>
-            </div>
-        </section>
+    <section class="hero">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container">
+            <div class="hero-content">
+                <h1>Temukan Menu Kopi yang Aman untuk Lambung Anda</h1>
+                <p>Sistem rekomendasi cerdas yang membantu penderita GERD memilih menu kopi terbaik di coffee shop Medan berdasarkan perhitungan akurat pada komposisi biji, teknik roasting, dan metode seduh.</p>
+                
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-lg">Lihat Daftar Rekomendasi →</button>
+                    <button class="btn btn-outline btn-lg">Pelajari Algoritma</button>
+                </div>
 
-        <section class="right-column">
-            <div class="login-card">
-                <h2>Selamat Datang</h2>
-                <p style="text-align: center; margin-bottom: 30px; color: #7f8c8d;">
-                    Temukan rekomendasi menu kopi dari berbagai coffee shop di Medan yang aman untuk lambung Anda.
-                </p>
-                <a href="login.html" class="btn-masuk" style="display: block; text-align: center; text-decoration: none;">
-                    Menuju Halaman Sign In
-                </a>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <span class="checkmark">✓</span>
+                        <span>Berbasis Literatur Medis</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="checkmark">✓</span>
+                        <span>Algoritma AI Cerdas</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="checkmark">✓</span>
+                        <span>Akurat & Presisi</span>
+                    </div>
+                </div>
             </div>
-        </section>
-    </main>
 
-    <footer class="footer">
-        <p>Informasi Seputar Website &copy; 2026 - Skripsi Universitas Pelita Harapan Medan</p>
+            <div class="hero-image">
+                <img src="https://cdn.dribbble.com/userupload/12302729/file/original-fa372845e394ee85bebe0389b9d86871.png?resize=1504x1128&vertical=center" alt="Dashboard Rekomendasi Kopi" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Gerd Card -->
+    <section class="features" id="gerd-cards">
+        <div class="container">
+            <div class="section-header">
+                <div class="badge">GERD</div>
+                <h2>Klasifikasi Tingkat Keparahan GERD</h2>
+                <p>Pemilihan menu kopi yang aman sangat bergantung pada tingkat keparahan asam lambung Anda. Sistem kami membagi toleransi pengguna ke dalam 3 tingkatan medis berikut:</p>
+            </div>
+
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="feature-card">
+                    <div class="feature-icon">🟢</div>
+                    <h3>Tingkat 1 (Ringan)</h3>
+                    <p>Gejala refluks asam disadari (seperti sensasi heartburn), namun sangat mudah ditoleransi dan sama sekali tidak mengganggu aktivitas normal sehari-hari.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🟡</div>
+                    <h3>Tingkat 2 (Sedang)</h3>
+                    <p>Frekuensi dan intensitas naiknya asam lambung cukup kuat sehingga mulai memengaruhi dan mengganggu aktivitas fisik serta rutinitas kehidupan harian secara signifikan.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔴</div>
+                    <h3>Tingkat 3 (Berat)</h3>
+                    <p>Gejala sangat persisten hingga mengganggu kesejahteraan hidup, memicu gangguan tidur parah, dan berisiko komplikasi struktural pada mukosa kerongkongan jika dibiarkan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gerd Step -->
+    <section class="how-it-works" id="gerd-steps">
+        <div class="how-it-works-content">
+            <div class="container">
+                <div class="section-header">
+                    <div class="badge">GERD</div>
+                    <h2>Klasifikasi Tingkat Keparahan GERD</h2>
+                    <p>Sistem secara otomatis menyesuaikan bobot filter rekomendasi berdasarkan 3 tingkatan kondisi lambung Anda di bawah ini:</p>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">01</div>
+                        <h3>Tingkat Ringan (Mild)</h3>
+                        <p>Gejala refluks asam disadari (seperti sensasi heartburn), namun sangat mudah ditoleransi dan sama sekali tidak mengganggu aktivitas normal sehari-hari.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <h3>Tingkat Sedang (Moderate)</h3>
+                        <p>Frekuensi dan intensitas naiknya asam lambung cukup kuat sehingga mulai memengaruhi dan mengganggu aktivitas fisik serta rutinitas kehidupan harian.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <h3>Tingkat Berat (Severe)</h3>
+                        <p>Gejala sangat persisten hingga mengganggu kesejahteraan hidup, memicu gangguan tidur parah, dan berisiko komplikasi struktural pada esofagus.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Siap menikmati kopi tanpa khawatir asam lambung naik?</h2>
+            <p>Bergabunglah dan temukan rekomendasi coffee shop beserta menu kopi teraman di kota Medan sekarang juga.</p>
+            <button class="btn btn-ghost btn-lg" >Masuk ke Sistem Utama →</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Informasi Seputar Website &copy; 2026 - Skripsi Universitas Pelita Harapan Medan | <a href="#" style="color: var(--muted-foreground);">Privacy</a> | <a href="#" style="color: var(--muted-foreground);">Terms</a></p>
+        </div>
     </footer>
+
+    <script>
+        // Header Scroll Effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>

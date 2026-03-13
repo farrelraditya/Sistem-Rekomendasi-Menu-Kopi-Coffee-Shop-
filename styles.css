@@ -1,0 +1,617 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #52b69a;
+    --primary-light: #76c893;
+    --primary-dark: #34a0a4;
+    --secondary: #1a759f;
+    --secondary-light: #168aad;
+    --background: #ffffff;
+    --foreground: #1f2937;
+    --muted: #f3f4f6;
+    --muted-foreground: #6b7280;
+    --border: #e5e7eb;
+    --accent: #f59e0b;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--foreground);
+    background-color: var(--background);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    background-color: transparent;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+
+header.scrolled {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-bottom-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 32px;
+}
+
+nav a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--foreground);
+}
+
+.header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--foreground);
+    font-size: 24px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--foreground);
+    border: 2px solid var(--border);
+}
+
+.btn-outline:hover {
+    background-color: var(--muted);
+    border-color: var(--foreground);
+}
+
+.btn-ghost {
+    background-color: white;
+    color: var(--primary);
+    padding: 8px;
+}
+
+.btn-ghost:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-lg {
+    padding: 14px 32px;
+    font-size: 16px;
+}
+
+/* Hero Section */
+.hero {
+    width: 100%;
+    padding: 80px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 64px 64px;
+    z-index: 0;
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 110%);
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 110%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.badge {
+    display: inline-block;
+    background-color: var(--muted);
+    color: var(--foreground);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--foreground), rgba(31, 41, 55, 0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero p {
+    font-size: 18px;
+    color: var(--muted-foreground);
+    margin-bottom: 32px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.hero-features {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: var(--muted-foreground);
+    margin-top: 24px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkmark {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.hero-image {
+    position: relative;
+    margin-top: 64px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-image img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+}
+
+.hero-glow-1,
+.hero-glow-2 {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.7;
+}
+
+.hero-glow-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(92, 246, 113, 0.3));
+    bottom: -150px;
+    right: -150px;
+}
+
+.hero-glow-2 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(92, 246, 113, 0.3), rgba(59, 130, 246, 0.3));
+    top: -150px;
+    left: -150px;
+}
+
+/* Features Section */
+.features {
+    width: 100%;
+    padding: 80px 20px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+
+.section-header p {
+    font-size: 16px;
+    color: var(--muted-foreground);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.feature-card {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--background), var(--muted));
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(59, 162, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.feature-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.feature-card p {
+    color: var(--muted-foreground);
+    font-size: 14px;
+}
+
+/* How It Works Section */
+.how-it-works {
+    width: 100%;
+    padding: 80px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.how-it-works::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 64px 64px;
+    z-index: 0;
+    -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, #000 40%, transparent 100%);
+}
+
+.how-it-works-content {
+    position: relative;
+    z-index: 1;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 48px;
+    position: relative;
+    margin-top: 64px;
+}
+
+.step-card {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.step-number {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(59, 156, 246, 0.3);
+}
+
+.step-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.step-card p {
+    color: var(--muted-foreground);
+    font-size: 14px;
+}
+
+/* CTA Section */
+.cta {
+    width: 100%;
+    padding: 80px 20px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    text-align: center;
+}
+
+.cta h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.cta p {
+    font-size: 18px;
+    margin-bottom: 32px;
+    opacity: 0.9;
+}
+
+/* Footer */
+footer {
+    width: 100%;
+    padding: 48px 20px;
+    background-color: var(--muted);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted-foreground);
+    font-size: 14px;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mobile-menu a {
+    color: var(--foreground);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* Sign In - Memastikan konten berada di tengah layar secara vertikal */
+.auth-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 64px - 100px); /* Dikurangi tinggi header & footer */
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Desain Kartu Form */
+.auth-card {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.05);
+}
+
+.auth-card-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.auth-card-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 8px;
+}
+
+.auth-card-header p {
+    font-size: 14px;
+    color: var(--muted-foreground);
+}
+
+/* Desain Input Form */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--foreground);
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--background);
+    color: var(--foreground);
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(82, 182, 154, 0.1); /* Warna primary dengan transparansi */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        display: none;
+    }
+
+    .header-actions {
+        gap: 8px;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .mobile-menu.active {
+        display: flex;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .feature-card:hover {
+        transform: none;
+    }
+
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+
+    .steps-grid::before {
+        display: none;
+    }
+
+    .section-header h2 {
+        font-size: 28px;
+    }
+
+    .hero {
+        padding: 60px 20px;
+    }
+
+    .logo-left span {
+        display: none; /* Sembunyikan teks logo di HP, sisakan icon saja agar tidak tabrakan */
+    }
+}

@@ -3,38 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Sign In - Rekomendasi Kopi</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sign In - Sistem Rekomendasi Kopi GERD</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Penyesuaian Header agar Sign In di tengah */
+        .header-content {
+            position: relative;
+            justify-content: center; /* Membuat isi header ke tengah */
+        }
+
+        .logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <h1>Sign In</h1>
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo logo-left">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                
+                <div class="header-title">
+                    Sign In
+                </div>
+            </div>
+        </div>
     </header>
 
-    <main class="container" style="justify-content: center;">
-        <div class="login-card" style="max-width: 500px;">
-            <form id="loginForm">
-                <div class="input-group">
-                    <label for="nama">Nama:</label>
-                    <input type="text" id="nama" required>
+    <section class="hero" style="padding: 0;">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container auth-wrapper">
+            <div class="auth-card">
+                <div class="auth-card-header">
+                    <h1>Selamat Datang</h1>
+                    <p>Silakan masukkan kredensial Anda untuk masuk ke sistem rekomendasi.</p>
                 </div>
-                <div class="input-group">
-                    <label for="gmail">Gmail:</label>
-                    <input type="email" id="gmail" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button type="submit" class="btn-masuk">Masuk</button>
-            </form>
-        </div>
-    </main>
 
-    <footer class="footer">
-        <p>Sistem Rekomendasi Kopi Aman Lambung</p>
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="nama">Nama</label>
+                        <input type="text" id="nama" class="form-input" placeholder="Masukkan nama Anda" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="gmail">Gmail</label>
+                        <input type="email" id="gmail" class="form-input" placeholder="contoh@gmail.com" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 32px;">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Masukkan password Anda" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; font-weight: 600;">
+                        Masuk
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--muted-foreground);">
+                    Belum punya akun? <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 600;">Daftar di sini</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Informasi Seputar Website &copy; 2026 - Skripsi Universitas Pelita Harapan Medan</p>
+        </div>
     </footer>
 
     <script type="module" src="app.js"></script>
+
+    <script>
+        // Header Scroll Effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
