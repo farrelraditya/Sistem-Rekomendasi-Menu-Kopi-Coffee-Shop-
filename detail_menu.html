@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Menu - Sistem Rekomendasi Kopi GERD</title>
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <div class="header-content" style="justify-content: space-between;">
+                <div class="logo">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                
+                <div class="header-actions">
+                    <a href="daftar_menu.html" class="btn btn-outline" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; border-color: var(--muted-foreground); color: var(--muted-foreground);">X</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 0;">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container detail-wrapper">
+            
+            <div class="detail-layout">
+                <div class="detail-left">
+                    
+                    <div class="image-box">
+                        <div class="image-label">Gambar Coffee Shop A</div>
+                        <img id="img-shop" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Coffee Shop">
+                    </div>
+
+                    <div class="image-box drink-img-box">
+                        <div class="image-label">Gambar Minuman </div>
+                        <img id="img-drink" src="https://images.unsplash.com/photo-1587080413959-06b859fb107d?q=80&w=1492&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Minuman">
+                    </div>
+
+                </div>
+
+                <div class="detail-right">
+                    
+                    <div class="info-card gerd-desc-card">
+                        <h3>Penjelasan Tingkatan GERD</h3>
+                        <p id="text-gerd-desc">Minuman ini diklasifikasikan sebagai <strong>Sangat Aman</strong>. Karakteristik kimiawinya sangat sesuai untuk penderita GERD Tingkat 1. Berdasarkan literatur medis, komposisi ini menghasilkan asam yang sangat minim dan tidak memicu relaksasi katup lambung secara agresif, sehingga tidak mengganggu aktivitas sehari-hari.</p>
+                    </div>
+
+                    <div class="info-card comp-header-card">
+                        <span class="comp-title">Komposisi</span>
+                        <span class="comp-badge level-1" id="badge-level">Tingkat GERD: 1</span>
+                    </div>
+
+                    <div class="info-card">
+                        <ul class="comp-list">
+                            <li>
+                                <strong>Jenis Kopi:</strong> 
+                                <span id="text-bean">Arabika (Kafein rendah: 0.94 - 1.59%)</span>
+                            </li>
+                            <li>
+                                <strong>Teknik Roasting:</strong> 
+                                <span id="text-roast">Dark Roast (Memproduksi senyawa penghambat asam NMP)</span>
+                            </li>
+                            <li>
+                                <strong>Teknik Seduh:</strong> 
+                                <span id="text-brew">Cold Brew (Rendah ekstraksi minyak iritan)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 - Skripsi Sistem Rekomendasi Kopi GERD | Universitas Pelita Harapan Medan | Disusun oleh: Imelda Sunario & M Farrel Raditya</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Header Scroll Effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const idMenu = urlParams.get('id_menu');
+
+        const badge = document.getElementById('badge-level');
+
+        if(idMenu === '2') {
+            // SIMULASI MENU B (LEVEL 2)
+            document.getElementById('img-drink').src = "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600";
+            document.getElementById('text-drink-name').innerText = "Minuman B (Cafe Latte)";
+            
+            badge.innerText = "Tingkat GERD: 2";
+            badge.className = "comp-badge level-2"; 
+            
+            document.getElementById('text-gerd-desc').innerHTML = "Minuman ini diklasifikasikan sebagai <strong>Cukup Aman / Waspada</strong>. Cocok untuk penderita GERD Tingkat 1, namun penderita Tingkat 2 disarankan untuk membatasi konsumsinya. Campuran susunya dapat sedikit menetralkan asam, namun kafeinnya tetap dapat memicu asam lambung.";
+            
+            document.getElementById('text-bean').innerText = "House Blend (Kafein menengah: 1.10 - 1.92%)";
+            document.getElementById('text-roast').innerText = "Medium Roast (Keseimbangan antara asam dan pahit)";
+            document.getElementById('text-brew').innerText = "Hot Brew - Espresso (Diekstrak dengan mesin bertekanan)";
+
+        } else if(idMenu === '3') {
+            // SIMULASI MENU C (LEVEL 3)
+            document.getElementById('img-drink').src = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
+            document.getElementById('text-drink-name').innerText = "Minuman C (Espresso)";
+            
+            badge.innerText = "Tingkat GERD: 3";
+            badge.className = "comp-badge level-3"; 
+            
+            document.getElementById('text-gerd-desc').innerHTML = "Minuman ini diklasifikasikan sebagai <strong>Sangat Berbahaya</strong> untuk lambung. Sangat berisiko memicu sekresi asam berlebih dan tidak disarankan untuk dikonsumsi penderita GERD Tingkat 2 maupun 3 karena dapat melemahkan katup kerongkongan.";
+            
+            document.getElementById('text-bean').innerText = "Robusta (Kafein sangat tinggi: 1.50 - 2.72%)";
+            document.getElementById('text-roast').innerText = "Light Roast (Mempertahankan kadar asam klorogenat maksimal)";
+            document.getElementById('text-brew').innerText = "Hot Brew - Espresso (Ampas halus dan ekstraksi tekanan tinggi)";
+        }
+        // Jika idMenu === '1' atau kosong, biarkan default HTML (Cold Brew Level 1)
+    </script>
+</body>
+</html>

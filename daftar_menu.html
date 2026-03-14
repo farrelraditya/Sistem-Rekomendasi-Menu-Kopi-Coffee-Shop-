@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Menu - Sistem Rekomendasi Kopi GERD</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <div class="header-content" style="justify-content: space-between;">
+                <div class="logo">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                
+                <div class="header-actions">
+                    <a href="daftar_rekomendasi.html" class="btn btn-outline" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; border-color: var(--muted-foreground); color: var(--muted-foreground);">X</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 0;">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container menu-wrapper">
+            
+            <div class="shop-profile-section">
+                <div class="shop-profile-image">
+                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop A">
+                    <h3 style="font-size: 16px; font-weight: 600;">Coffee Shop A</h3>
+                </div>
+
+                <div class="shop-profile-info">
+                    <div class="info-box">
+                        <h2>Nama Coffee Shop: Coffee Shop A</h2>
+                        <p><strong>Alamat:</strong> Jl. Setiabudi No. 123, Medan, Sumatera Utara</p>
+                    </div>
+                    <div class="info-box" style="background-color: rgba(82, 182, 154, 0.05);">
+                        <h3 style="margin-bottom: 8px;">Penjelasan Tingkatan GERD</h3>
+                        <p><strong>Tingkat 1:</strong> Sangat Aman (Arabika, Cold Brew).<br>
+                        <strong>Tingkat 2:</strong> Waspada / Cukup Aman (House Blend, Medium Roast).<br>
+                        <strong>Tingkat 3:</strong> Berbahaya / Hindari (Robusta, Light Roast, Tubruk).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <div class="search-container">
+                    <input type="text" class="toolbar-input" placeholder="Cari minuman (cth: Americano, Latte)...">
+                </div>
+                <div class="filter-container">
+                    <select class="toolbar-input" style="cursor: pointer;">
+                        <option value="">Filter Tingkat GERD</option>
+                        <option value="1">Tingkat GERD 1 (Aman)</option>
+                        <option value="2">Tingkat GERD 2 (Waspada)</option>
+                        <option value="3">Tingkat GERD 3 (Berisiko)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                
+                <div class="menu-item-wrapper">
+                    <a href="detail_menu.html?id_menu=1" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="menu-card">
+                            <img src="https://images.unsplash.com/photo-1587080413959-06b859fb107d?q=80&w=1492&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Minuman A">
+                            <div class="gerd-indicator level-1">Tingkat GERD 1</div>
+                        </div>
+                        <div class="menu-name">Minuman A (Cold Brew)</div>
+                    </a>
+                </div>
+
+                <div class="menu-item-wrapper">
+                    <a href="detail_menu.html?id_menu=2" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="menu-card">
+                            <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600" alt="Minuman B">
+                            <div class="gerd-indicator level-2">Tingkat GERD 2</div>
+                        </div>
+                        <div class="menu-name">Minuman B (Cafe Latte)</div>
+                    </a>
+                </div>
+
+                <div class="menu-item-wrapper">
+                    <a href="detail_menu.html?id_menu=3" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="menu-card">
+                            <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600" alt="Minuman C">
+                            <div class="gerd-indicator level-3">Tingkat GERD 3</div>
+                        </div>
+                        <div class="menu-name">Minuman C (Espresso)</div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 - Skripsi Sistem Rekomendasi Kopi GERD | Universitas Pelita Harapan Medan | Disusun oleh: Imelda Sunario & M Farrel Raditya</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Header Scroll Effect (Kode sebelumnya)
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // ==========================================
+        // 2. KODE UNTUK FITUR PENCARIAN & FILTER
+        // ==========================================
+        
+        // Ambil elemen input pencarian, dropdown filter, dan semua kotak minuman
+        const searchInput = document.querySelector('.search-container input');
+        const filterDropdown = document.querySelector('.filter-container select');
+        const menuItems = document.querySelectorAll('.menu-item-wrapper');
+
+        // Fungsi utama untuk memfilter menu
+        function filterMenu() {
+            // Ambil teks yang diketik pengguna (ubah ke huruf kecil semua)
+            const keyword = searchInput.value.toLowerCase();
+            // Ambil angka level yang dipilih dari dropdown (1, 2, atau 3)
+            const selectedLevel = filterDropdown.value; 
+
+            // Lakukan perulangan untuk mengecek setiap kotak minuman satu per satu
+            menuItems.forEach(function(item) {
+                // Ambil nama minuman dari dalam kotak
+                const menuName = item.querySelector('.menu-name').innerText.toLowerCase();
+                
+                // Cek level GERD dari kotak tersebut berdasarkan class warnanya
+                const indicator = item.querySelector('.gerd-indicator');
+                let itemLevel = "";
+                if (indicator.classList.contains('level-1')) itemLevel = "1";
+                else if (indicator.classList.contains('level-2')) itemLevel = "2";
+                else if (indicator.classList.contains('level-3')) itemLevel = "3";
+
+                // Logika Pencocokan:
+                // Apakah nama minuman mengandung huruf yang diketik?
+                const matchKeyword = menuName.includes(keyword);
+                // Apakah level minuman sama dengan level di dropdown? (Jika dropdown kosong "", tampilkan semua)
+                const matchLevel = (selectedLevel === "" || itemLevel === selectedLevel);
+
+                // Jika COCOK dengan pencarian DAN COCOK dengan filter, Tampilkan!
+                if (matchKeyword && matchLevel) {
+                    item.style.display = "flex"; // Munculkan kotak
+                } else {
+                    item.style.display = "none"; // Sembunyikan kotak
+                }
+            });
+        }
+
+        // Pasang "Pendengar" (Event Listener) agar fungsi dijalankan saat ada interaksi
+        searchInput.addEventListener('input', filterMenu); // Berjalan setiap kali huruf diketik
+        filterDropdown.addEventListener('change', filterMenu); // Berjalan setiap kali opsi filter diubah
+
+        // ==========================================
+        // KODE UNTUK MENANGKAP ID TOKO DARI URL
+        // ==========================================
+        
+        // 1. Tangkap parameter dari URL (misal: ?id=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const idToko = urlParams.get('id');
+
+        // 2. Elemen HTML yang akan kita ubah teks/gambarnya
+        const namaTokoEl = document.querySelector('.info-box h2');
+        const gambarTokoEl = document.querySelector('.shop-profile-image img');
+        const namaTokoKecilEl = document.querySelector('.shop-profile-image h3');
+
+        // 3. Logika Simulasi Penggantian Data (Nanti ini diganti dengan tarikan data dari Firebase)
+        if (idToko === '1') {
+            namaTokoEl.innerText = "Nama Coffee Shop: Coffee Shop A";
+            namaTokoKecilEl.innerText = "Coffee Shop A";
+            // Set gambar untuk toko A
+        } else if (idToko === '2') {
+            namaTokoEl.innerText = "Nama Coffee Shop: Coffee Shop B";
+            namaTokoKecilEl.innerText = "Coffee Shop B";
+            // Ganti gambar untuk toko B
+            gambarTokoEl.src = "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800"; 
+        } else if (idToko === '3') {
+            namaTokoEl.innerText = "Nama Coffee Shop: Coffee Shop C";
+            namaTokoKecilEl.innerText = "Coffee Shop C";
+            // Ganti gambar untuk toko C
+            gambarTokoEl.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800";
+        } else {
+            // Jika tidak ada ID, kembalikan ke halaman rekomendasi
+            // window.location.href = "rekomendasi.html";
+        }
+    </script>
+</body>
+</html>
