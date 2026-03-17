@@ -34,7 +34,7 @@
                     
                     <div class="image-box">
                         <div class="image-label">Gambar Coffee Shop A</div>
-                        <img id="img-shop" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Coffee Shop">
+                        <img id="img-shop" alt="Gambar Coffee Shop">
                     </div>
 
                     <div class="image-box drink-img-box">
@@ -85,51 +85,136 @@
         </div>
     </footer>
 
-    <script>
-        // 1. Header Scroll Effect
+    <script type="module">
+        // 1. Import Firebase dan Tools untuk Mengambil 1 Dokumen Spesifik (getDoc)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // 2. KONFIGURASI FIREBASE (AWAS: Masukkan kunci aslimu lagi di sini!)
+        const firebaseConfig = {
+        apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
+        authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+        projectId: "sistem-rekomendasi-kopi-gerd",
+        storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+        messagingSenderId: "955125085378",
+        appId: "1:955125085378:web:d6211bb582ace6e557775b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 3. Header Scroll Effect
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+            if (window.scrollY > 10) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
         });
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const idMenu = urlParams.get('id_menu');
-
-        const badge = document.getElementById('badge-level');
-
-        if(idMenu === '2') {
-            // SIMULASI MENU B (LEVEL 2)
-            document.getElementById('img-drink').src = "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600";
-            document.getElementById('text-drink-name').innerText = "Minuman B (Cafe Latte)";
-            
-            badge.innerText = "Tingkat GERD: 2";
-            badge.className = "comp-badge level-2"; 
-            
-            document.getElementById('text-gerd-desc').innerHTML = "Minuman ini diklasifikasikan sebagai <strong>Cukup Aman / Waspada</strong>. Cocok untuk penderita GERD Tingkat 1, namun penderita Tingkat 2 disarankan untuk membatasi konsumsinya. Campuran susunya dapat sedikit menetralkan asam, namun kafeinnya tetap dapat memicu asam lambung.";
-            
-            document.getElementById('text-bean').innerText = "House Blend (Kafein menengah: 1.10 - 1.92%)";
-            document.getElementById('text-roast').innerText = "Medium Roast (Keseimbangan antara asam dan pahit)";
-            document.getElementById('text-brew').innerText = "Hot Brew - Espresso (Diekstrak dengan mesin bertekanan)";
-
-        } else if(idMenu === '3') {
-            // SIMULASI MENU C (LEVEL 3)
-            document.getElementById('img-drink').src = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
-            document.getElementById('text-drink-name').innerText = "Minuman C (Espresso)";
-            
-            badge.innerText = "Tingkat GERD: 3";
-            badge.className = "comp-badge level-3"; 
-            
-            document.getElementById('text-gerd-desc').innerHTML = "Minuman ini diklasifikasikan sebagai <strong>Sangat Berbahaya</strong> untuk lambung. Sangat berisiko memicu sekresi asam berlebih dan tidak disarankan untuk dikonsumsi penderita GERD Tingkat 2 maupun 3 karena dapat melemahkan katup kerongkongan.";
-            
-            document.getElementById('text-bean').innerText = "Robusta (Kafein sangat tinggi: 1.50 - 2.72%)";
-            document.getElementById('text-roast').innerText = "Light Roast (Mempertahankan kadar asam klorogenat maksimal)";
-            document.getElementById('text-brew').innerText = "Hot Brew - Espresso (Ampas halus dan ekstraksi tekanan tinggi)";
+        // ==========================================
+        // 4. ALGORITMA COSINE SIMILARITY
+        // ==========================================
+        function hitungCosineSimilarity(vektorUser, vektorMenu) {
+            let dotProduct = 0, magnitudeUser = 0, magnitudeMenu = 0;
+            for (let i = 0; i < vektorUser.length; i++) {
+                dotProduct += (vektorUser[i] * vektorMenu[i]);
+                magnitudeUser += Math.pow(vektorUser[i], 2);
+                magnitudeMenu += Math.pow(vektorMenu[i], 2);
+            }
+            magnitudeUser = Math.sqrt(magnitudeUser);
+            magnitudeMenu = Math.sqrt(magnitudeMenu);
+            if (magnitudeUser === 0 || magnitudeMenu === 0) return 0;
+            return dotProduct / (magnitudeUser * magnitudeMenu);
         }
-        // Jika idMenu === '1' atau kosong, biarkan default HTML (Cold Brew Level 1)
+        const profilIdealAman = [1.0, 1.0, 1.0];
+
+        // ==========================================
+        // 5. FETCH 1 DOKUMEN SPESIFIK & RENDER KE LAYAR
+        // ==========================================
+        async function tampilkanDetailMenu() {
+            // Tangkap ID Menu dari URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const idMenu = urlParams.get('id_menu');
+
+            if (!idMenu) {
+                document.getElementById('text-gerd-desc').innerText = "Error: Menu tidak ditemukan.";
+                return;
+            }
+
+            try {
+                // Tarik HANYA 1 dokumen berdasarkan ID tersebut dari koleksi MenuKopi
+                const docRef = doc(db, "MenuKopi", idMenu);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Hitung Skor
+                    const vektorMenu = [data.bobot_biji, data.bobot_roast, data.bobot_seduh];
+                    const skor = hitungCosineSimilarity(profilIdealAman, vektorMenu);
+
+                    // --- UPDATE UI: NAMA & GAMBAR ---
+                    
+                    // KODE TAMBAHAN UNTUK MEMPERBAIKI TOMBOL X (BACK)
+                    const tombolBack = document.querySelector('.header-actions a.btn-outline');
+                    tombolBack.href = `daftar_menu.html?id=${encodeURIComponent(data.id_toko)}`;
+                    // ===============================================
+
+                    // Mengubah label gambar menjadi nama menu
+                    document.querySelector('.drink-img-box .image-label').innerText = data.nama_menu;
+                    // ... (kode sisanya tetap sama)
+
+                    // Mengatur gambar default berdasarkan toko
+                    const gambarToko = {
+                    "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
+                    "Fore Coffee": "images_coffeeshop/Fore_Mansyur.jpeg",
+                    "Kopi Kenangan": "images_coffeeshop/KopKen_Multatuli.jpeg",
+                    "Kopi Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
+                    };
+                    if(gambarToko[data.id_toko]) document.getElementById('img-shop').src = gambarToko[data.id_toko];
+
+                    // --- UPDATE UI: KOMPOSISI ---
+                    document.getElementById('text-bean').innerText = data.jenis_biji;
+                    document.getElementById('text-roast').innerText = data.teknik_roast;
+                    document.getElementById('text-brew').innerText = data.metode_seduh;
+
+                    // --- LOGIKA PENENTUAN TINGKAT GERD ---
+                    const badge = document.getElementById('badge-level');
+                    const desc = document.getElementById('text-gerd-desc');
+                    const imgDrink = document.getElementById('img-drink');
+
+                    if (skor >= 0.85) {
+                        // LEVEL 1 (SANGAT AMAN)
+                        badge.innerText = `Tingkat GERD: 1 (Skor: ${(skor*100).toFixed(1)}%)`;
+                        badge.className = "comp-badge level-1";
+                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Sangat Aman</strong>. Karakteristik kimiawinya sangat sesuai untuk penderita GERD Tingkat 1. Komposisi ini menghasilkan asam yang sangat minim dan tidak memicu relaksasi katup lambung secara agresif.`;
+                        imgDrink.src = "https://images.unsplash.com/photo-1587080413959-06b859fb107d?auto=format&fit=crop&q=80&w=600";
+                    } 
+                    else if (skor >= 0.65) {
+                        // LEVEL 2 (WASPADA)
+                        badge.innerText = `Tingkat GERD: 2 (Skor: ${(skor*100).toFixed(1)}%)`;
+                        badge.className = "comp-badge level-2";
+                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Cukup Aman / Waspada</strong>. Cocok untuk penderita GERD Tingkat 1, namun penderita Tingkat 2 disarankan untuk membatasi konsumsinya.`;
+                        imgDrink.src = "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600";
+                    } 
+                    else {
+                        // LEVEL 3 (BERBAHAYA)
+                        badge.innerText = `Tingkat GERD: 3 (Skor: ${(skor*100).toFixed(1)}%)`;
+                        badge.className = "comp-badge level-3";
+                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Sangat Berbahaya</strong> untuk lambung. Sangat berisiko memicu sekresi asam berlebih dan melemahkan katup kerongkongan karena kombinasi komposisinya yang keras.`;
+                        imgDrink.src = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
+                    }
+
+                } else {
+                    document.getElementById('text-gerd-desc').innerText = "Data minuman tidak ditemukan di database.";
+                }
+            } catch (error) {
+                console.error("Error mengambil detail menu:", error);
+                document.getElementById('text-gerd-desc').innerText = "Gagal memuat detail menu. Periksa koneksi internet.";
+            }
+        }
+
+        // Eksekusi fungsi!
+        tampilkanDetailMenu();
     </script>
 </body>
 </html>

@@ -123,8 +123,25 @@
         </div>
     </footer>
 
-    <script>
-        // Header Scroll Effect
+    <script type="module">
+        // 1. Import Firebase dan Firestore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // 2. KONFIGURASI FIREBASE (PENTING: Ganti dengan milikmu yang asli!)
+        const firebaseConfig = {
+        apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
+        authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+        projectId: "sistem-rekomendasi-kopi-gerd",
+        storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+        messagingSenderId: "955125085378",
+        appId: "1:955125085378:web:d6211bb582ace6e557775b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Header Scroll Effect (Bawaan Imelda)
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 10) {
@@ -133,6 +150,113 @@
                 header.classList.remove('scrolled');
             }
         });
+
+        // ==========================================
+        // 3. ALGORITMA COSINE SIMILARITY
+        // ==========================================
+        function hitungCosineSimilarity(vektorUser, vektorMenu) {
+            let dotProduct = 0, magnitudeUser = 0, magnitudeMenu = 0;
+            for (let i = 0; i < vektorUser.length; i++) {
+                dotProduct += (vektorUser[i] * vektorMenu[i]);
+                magnitudeUser += Math.pow(vektorUser[i], 2);
+                magnitudeMenu += Math.pow(vektorMenu[i], 2);
+            }
+            magnitudeUser = Math.sqrt(magnitudeUser);
+            magnitudeMenu = Math.sqrt(magnitudeMenu);
+            if (magnitudeUser === 0 || magnitudeMenu === 0) return 0;
+            return dotProduct / (magnitudeUser * magnitudeMenu);
+        }
+
+        // Vektor Ideal untuk GERD (Biji: 1.0, Roast: 1.0, Seduh: 1.0)
+        const profilIdealAman = [1.0, 1.0, 1.0];
+
+        // ==========================================
+        // 4. FETCH DATA & PROSES RANKING
+        // ==========================================
+        async function tampilkanRekomendasi() {
+            const grid = document.querySelector('.shops-grid');
+            grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menganalisis algoritma dan menarik data dari Firebase...</p>';
+
+            try {
+                const menuRef = collection(db, "MenuKopi");
+                const snapshot = await getDocs(menuRef);
+                const rekapToko = {};
+
+                // A. Menghitung skor setiap menu dan mengelompokkannya per toko
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const vektorMenu = [data.bobot_biji, data.bobot_roast, data.bobot_seduh];
+                    const skor = hitungCosineSimilarity(profilIdealAman, vektorMenu);
+
+                    if (!rekapToko[data.id_toko]) {
+                        rekapToko[data.id_toko] = { nama: data.id_toko, totalSkor: 0, jumlahMenu: 0 };
+                    }
+                    rekapToko[data.id_toko].totalSkor += skor;
+                    rekapToko[data.id_toko].jumlahMenu += 1;
+                });
+
+                // B. Menghitung rata-rata skor keamanan tiap toko untuk menentukan ranking
+                const rankingToko = Object.values(rekapToko).map(toko => {
+                    toko.skorRataRata = toko.totalSkor / toko.jumlahMenu;
+                    return toko;
+                });
+
+                // C. Mengurutkan toko dari skor tertinggi (teraman) ke terendah
+                rankingToko.sort((a, b) => b.skorRataRata - a.skorRataRata);
+
+                // D. Cetak ke HTML buatan Imelda
+                grid.innerHTML = ''; // Bersihkan loading
+                
+                // Siapkan gambar default untuk masing-masing toko
+                const gambarToko = {
+                    "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
+                    "Fore Coffee": "images_coffeeshop/Fore_Mansyur.jpeg",
+                    "Kopi Kenangan": "images_coffeeshop/KopKen_Multatuli.jpeg",
+                    "Kopi Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
+                };
+
+                rankingToko.forEach((toko, index) => {
+                    const rank = index + 1;
+                    let badgeColor = '';
+                    let badgeText = `#${rank} Paling Aman`;
+
+                    if (rank === 2) {
+                        badgeColor = 'style="background-color: var(--secondary);"';
+                        badgeText = `#${rank} Aman`;
+                    } else if (rank > 2) {
+                        badgeColor = 'style="background-color: var(--accent);"';
+                        badgeText = `#${rank} Cukup Aman`;
+                    }
+
+                    const imgSrc = gambarToko[toko.nama] || gambarToko["Starbucks"];
+                    const linkKeMenu = `daftar_menu.html?id=${encodeURIComponent(toko.nama)}`; // Kirim nama toko ke URL
+
+                    const cardHTML = `
+                        <div class="shop-card">
+                            <div class="shop-card-header">
+                                <h3>${toko.nama}</h3>
+                                <p style="font-size: 12px; color: gray; margin-top: 5px;">Skor Medis: ${(toko.skorRataRata * 100).toFixed(1)}%</p>
+                            </div>
+                            <div class="shop-card-image">
+                                <div class="rank-badge" ${badgeColor}>${badgeText}</div>
+                                <img src="${imgSrc}" alt="Gambar ${toko.nama}">
+                            </div>
+                            <div class="shop-card-footer">
+                                <a href="${linkKeMenu}" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHTML;
+                });
+
+            } catch (error) {
+                console.error("Error mengambil data: ", error);
+                grid.innerHTML = '<p style="color:red;">Gagal memuat rekomendasi. Periksa koneksi atau rules Firebase.</p>';
+            }
+        }
+
+        // 5. Jalankan fungsi saat halaman dimuat
+        tampilkanRekomendasi();
     </script>
 </body>
 </html>

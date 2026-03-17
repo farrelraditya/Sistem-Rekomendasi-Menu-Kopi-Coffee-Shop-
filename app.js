@@ -6,11 +6,11 @@ import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/fir
 // PENTING: Ganti isi variabel ini dengan konfigurasi asli dari Firebase Console milikmu!
 const firebaseConfig = {
   apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
-  authDomain: "PROJECT-ID.firebaseapp.com",
-  projectId: "PROJECT-ID",
-  storageBucket: "PROJECT-ID.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
+  authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+  projectId: "sistem-rekomendasi-kopi-gerd",
+  storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+  messagingSenderId: "955125085378",
+  appId: "1:955125085378:web:d6211bb582ace6e557775b"
 };
 
 // 3. Inisialisasi Firebase & Firebase Auth
