@@ -166,9 +166,9 @@
                     // Mengatur gambar default berdasarkan toko
                     const gambarToko = {
                     "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
-                    "Fore Coffee": "images_coffeeshop/Fore_Mansyur.jpeg",
+                    "Fore": "images_coffeeshop/Fore_Mansyur.jpeg",
                     "Kopi Kenangan": "images_coffeeshop/KopKen_Multatuli.jpeg",
-                    "Kopi Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
+                    "Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
                     };
                     if(gambarToko[data.id_toko]) document.getElementById('img-shop').src = gambarToko[data.id_toko];
 
@@ -182,26 +182,25 @@
                     const desc = document.getElementById('text-gerd-desc');
                     const imgDrink = document.getElementById('img-drink');
 
+                    imgDrink.src = data.url_gambar; // Set gambar default dulu, nanti akan diubah sesuai tingkat GERD
+
                     if (skor >= 0.85) {
                         // LEVEL 1 (SANGAT AMAN)
                         badge.innerText = `Tingkat GERD: 1 (Skor: ${(skor*100).toFixed(1)}%)`;
                         badge.className = "comp-badge level-1";
                         desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Sangat Aman</strong>. Karakteristik kimiawinya sangat sesuai untuk penderita GERD Tingkat 1. Komposisi ini menghasilkan asam yang sangat minim dan tidak memicu relaksasi katup lambung secara agresif.`;
-                        imgDrink.src = "https://images.unsplash.com/photo-1587080413959-06b859fb107d?auto=format&fit=crop&q=80&w=600";
                     } 
                     else if (skor >= 0.65) {
                         // LEVEL 2 (WASPADA)
                         badge.innerText = `Tingkat GERD: 2 (Skor: ${(skor*100).toFixed(1)}%)`;
                         badge.className = "comp-badge level-2";
                         desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Cukup Aman / Waspada</strong>. Cocok untuk penderita GERD Tingkat 1, namun penderita Tingkat 2 disarankan untuk membatasi konsumsinya.`;
-                        imgDrink.src = "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600";
                     } 
                     else {
                         // LEVEL 3 (BERBAHAYA)
                         badge.innerText = `Tingkat GERD: 3 (Skor: ${(skor*100).toFixed(1)}%)`;
                         badge.className = "comp-badge level-3";
                         desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Sangat Berbahaya</strong> untuk lambung. Sangat berisiko memicu sekresi asam berlebih dan melemahkan katup kerongkongan karena kombinasi komposisinya yang keras.`;
-                        imgDrink.src = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
                     }
 
                 } else {

@@ -142,9 +142,9 @@
         // Dictionary Gambar Toko
         const gambarToko = {
             "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
-            "Fore Coffee": "images_coffeeshop/Fore_Mansyur.jpeg", 
+            "Fore": "images_coffeeshop/Fore_Mansyur.jpeg", 
             "Kopi Kenangan": "images_coffeeshop/KopKen_Multatuli.jpeg",
-            "Kopi Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
+            "Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
         };
         
         // Pasang gambar yang sesuai dengan fitur pelacak Error
@@ -217,11 +217,8 @@
                         levelText = "Tingkat GERD 2 (Waspada)";
                     }
 
-                    // Tentukan gambar default untuk minuman (hanya agar visual UI-nya cantik)
-                    let imgMenu = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600"; // Gambar Kopi Hitam (Level 3)
-                    if (level === 1) imgMenu = "https://images.unsplash.com/photo-1587080413959-06b859fb107d?auto=format&fit=crop&q=80&w=600"; // Cold Brew
-                    if (level === 2) imgMenu = "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600"; // Latte
-
+                    // Mengambil gambar asli menu dari database Firebase
+                    let imgMenu = data.url_gambar;
                     // Cetak ke layar
                     const cardHTML = `
                         <div class="menu-item-wrapper" data-level="${level}">
