@@ -42,8 +42,8 @@
                     <div class="info-box" style="background-color: rgba(82, 182, 154, 0.05);">
                         <h3 style="margin-bottom: 8px;">Penjelasan Tingkatan GERD</h3>
                         <p><strong>Tingkat 1:</strong> Sangat Aman (Arabika, Cold Brew).<br>
-                        <strong>Tingkat 2:</strong> Waspada / Cukup Aman (House Blend, Medium Roast).<br>
-                        <strong>Tingkat 3:</strong> Berbahaya / Hindari (Robusta, Light Roast, Tubruk).</p>
+                        <strong>Tingkat 2:</strong> Cukup Aman (House Blend, Medium Roast).<br>
+                        <strong>Tingkat 3:</strong> Kurang Aman (Robusta, Light Roast, Tubruk).</p>
                     </div>
                 </div>
             </div>
@@ -56,8 +56,8 @@
                     <select class="toolbar-input" style="cursor: pointer;">
                         <option value="">Filter Tingkat GERD</option>
                         <option value="1">Tingkat GERD 1 (Aman)</option>
-                        <option value="2">Tingkat GERD 2 (Waspada)</option>
-                        <option value="3">Tingkat GERD 3 (Berisiko)</option>
+                        <option value="2">Tingkat GERD 2 (Cukup Aman)</option>
+                        <option value="3">Tingkat GERD 3 (Kurang Aman)</option>
                     </select>
                 </div>
             </div>
@@ -109,7 +109,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // 2. KONFIGURASI FIREBASE (AWAS: JANGAN LUPA DIGANTI DENGAN YANG ASLI! 😆)
+        // 2. KONFIGURASI FIREBASE
         const firebaseConfig = {
         apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
         authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
@@ -129,9 +129,7 @@
             else header.classList.remove('scrolled');
         });
 
-        // ==========================================
         // 4. LOGIKA MENANGKAP ID TOKO & UPDATE PROFIL
-        // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
         const idToko = urlParams.get('id');
 
@@ -155,9 +153,7 @@
             console.warn("GAGAL: Nama toko '" + idToko + "' tidak ada di dalam dictionary gambarToko!");
         }
 
-        // ==========================================
         // 5. ALGORITMA COSINE SIMILARITY
-        // ==========================================
         function hitungCosineSimilarity(vektorUser, vektorMenu) {
             let dotProduct = 0, magnitudeUser = 0, magnitudeMenu = 0;
             for (let i = 0; i < vektorUser.length; i++) {
@@ -172,9 +168,7 @@
         }
         const profilIdealAman = [1.0, 1.0, 1.0];
 
-        // ==========================================
         // 6. FETCH MENU DARI FIREBASE & RENDER HTML
-        // ==========================================
         async function tampilkanMenu() {
             const grid = document.querySelector('.menu-grid');
             grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menarik data menu khusus toko ini...</p>';
@@ -196,6 +190,9 @@
                     return;
                 }
 
+                // 1. Buat Array kosong untuk menampung menu sebelum dicetak
+                let arrayMenu = [];
+
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const docId = doc.id; // Menyimpan ID Unik dokumen untuk halaman detail nanti
@@ -205,7 +202,7 @@
                     // Menentukan Klasifikasi Tingkat GERD berdasarkan Skor Algoritma
                     let level = 3;
                     let levelClass = "level-3";
-                    let levelText = "Tingkat GERD 3 (Bahaya)";
+                    let levelText = "Tingkat GERD 3 (Kurang Aman)";
                     
                     if (skor >= 0.85) {
                         level = 1;
@@ -214,12 +211,13 @@
                     } else if (skor >= 0.65) {
                         level = 2;
                         levelClass = "level-2";
-                        levelText = "Tingkat GERD 2 (Waspada)";
+                        levelText = "Tingkat GERD 2 (Cukup Aman)";
                     }
 
                     // Mengambil gambar asli menu dari database Firebase
                     let imgMenu = data.url_gambar;
-                    // Cetak ke layar
+                    
+                    // Siapkan elemen HTML untuk Card
                     const cardHTML = `
                         <div class="menu-item-wrapper" data-level="${level}">
                             <a href="detail_menu.html?id_menu=${docId}" style="text-decoration: none; color: inherit; display: block;">
@@ -231,10 +229,21 @@
                             </a>
                         </div>
                     `;
-                    grid.innerHTML += cardHTML;
+
+                    // 2. Masukkan HTML dan Skor-nya ke dalam Array
+                    arrayMenu.push({
+                        elemenHTML: cardHTML,
+                        skorAlgoritma: skor
+                    });
                 });
 
-                // Pasang ulang fitur pencarian & filter Imelda setelah menu berhasil dicetak
+                // 3. Urutkan Array secara Descending (Skor terbesar ke terkecil)
+                arrayMenu.sort((a, b) => b.skorAlgoritma - a.skorAlgoritma);
+
+                // 4. Cetak isi Array yang sudah berurut tersebut ke layar HTML
+                arrayMenu.forEach(item => {
+                    grid.innerHTML += item.elemenHTML;
+                });
                 initFilterSearch();
 
             } catch (error) {
@@ -243,9 +252,7 @@
             }
         }
 
-        // ==========================================
-        // 7. FITUR PENCARIAN & FILTER (KODE IMELDA YANG DISEMPURNAKAN)
-        // ==========================================
+        // 7. FITUR PENCARIAN & FILTER
         function initFilterSearch() {
             const searchInput = document.querySelector('.search-container input');
             const filterDropdown = document.querySelector('.filter-container select');
