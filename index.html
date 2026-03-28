@@ -14,23 +14,13 @@
                     <div class="logo-icon">G</div>
                     <span>GERD CoffeeRec</span>
                 </div>
-                
-                <nav>
-                    <a href="#gerd-cards">GERD (Layout Kartu)</a>
-                    <a href="#gerd-steps">GERD (Layout Step)</a>
-                </nav>
 
                 <div class="header-actions">
                     <a href="login.html" class="btn btn-primary" style="border-radius: 20px; padding: 10px 20px;">Sign In</a>
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
                 </div>
             </div>
         </div>
         
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#gerd-cards">GERD (Layout Kartu)</a>
-            <a href="#gerd-steps">GERD (Layout Step)</a>
-        </div>
     </header>
 
     <section class="hero">
@@ -122,22 +112,6 @@
             } else {
                 header.classList.remove('scrolled');
             }
-        });
-
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking on links
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-            });
         });
     </script>
 </body>
