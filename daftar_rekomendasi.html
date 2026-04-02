@@ -16,7 +16,10 @@
                 </div>
                 
                 <div class="header-actions">
-                    <a href="#" id="btnLogout" class="btn btn-out">Logout</a>
+                    <a href="profile.html" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none;">
+                        <img src="images_icon/user.png" alt="Icon Profil" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+                        Profil Saya
+                    </a>
                 </div>
             </div>
         </div>
@@ -30,8 +33,8 @@
             
             <div class="recommendation-header">
                 <h1>Rekomendasi Coffee Shop</h1>
-                <p>💡 <strong>Info:</strong> Urutan teratas adalah Coffee Shop yang memiliki menu aman untuk lambung paling banyak.</p>
-                <div id="statusGerdUser" style="margin-top: 15px; padding: 10px; background-color: #e2e8f0; border-radius: 8px; display: inline-block; font-weight: bold; color: var(--foreground);">
+                <p>💡 <strong>Info:</strong> Urutan teratas adalah Coffee Shop yang memiliki tingkat keamanan dan rasio menu aman tertinggi untuk kondisi lambung Anda.</p>
+                <div id="statusGerdUser" style="margin-top: 15px; padding: 10px; background-color: #e2e8f0; border-radius: 8px; display: inline-block; font-weight: bold; color: var(--foreground); line-height: 1.5;">
                     Menganalisis profil lambung Anda...
                 </div>
             </div>
@@ -43,7 +46,7 @@
 
     <footer>
         <div class="container">
-            <p>Informasi Seputar Website &copy; 2026 - Skripsi Universitas Pelita Harapan Medan</p>
+            <p>&copy; 2026 - Skripsi Sistem Rekomendasi Kopi GERD | Universitas Pelita Harapan Medan | Disusun oleh: Imelda Sunario & M Farrel Raditya</p>
         </div>
     </footer>
 
@@ -77,17 +80,6 @@
             }
         });
 
-        // Fitur Logout
-        const btnLogout = document.getElementById('btnLogout');
-        if (btnLogout) {
-            btnLogout.addEventListener('click', (e) => {
-                e.preventDefault();
-                signOut(auth).then(() => {
-                    window.location.href = "login.html";
-                });
-            });
-        }
-
         // ==========================================
         // 3. ALGORITMA COSINE SIMILARITY
         // ==========================================
@@ -107,7 +99,7 @@
         // ==========================================
         // 4. FETCH DATA & PROSES RANKING (DINAMIS BERDASARKAN GERD)
         // ==========================================
-        async function tampilkanRekomendasi(profilIdealAman) {
+        async function tampilkanRekomendasi(profilIdealAman, batasSkorMinimal) {
             const grid = document.getElementById('gridRekomendasi');
             grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menghitung kecocokan menu dengan lambung Anda...</p>';
 
@@ -123,20 +115,35 @@
                     const skor = hitungCosineSimilarity(profilIdealAman, vektorMenu);
 
                     if (!rekapToko[data.id_toko]) {
-                        rekapToko[data.id_toko] = { nama: data.id_toko, totalSkor: 0, jumlahMenu: 0 };
+                        rekapToko[data.id_toko] = { 
+                            nama: data.id_toko, 
+                            totalSkorCosine: 0, 
+                            jumlahSeluruhMenu: 0, 
+                            jumlahMenuAman: 0 
+                        };
                     }
-                    rekapToko[data.id_toko].totalSkor += skor;
-                    rekapToko[data.id_toko].jumlahMenu += 1;
+                    
+                    rekapToko[data.id_toko].totalSkorCosine += skor;
+                    rekapToko[data.id_toko].jumlahSeluruhMenu += 1;
+
+                    // MENGHITUNG RASIO: Cek apakah menu ini lulus filter batas aman User
+                    if (skor >= batasSkorMinimal) {
+                        rekapToko[data.id_toko].jumlahMenuAman += 1;
+                    }
                 });
 
-                // B. Menghitung rata-rata skor keamanan tiap toko
+                // B. Menghitung Blended Score (Kombinasi 50% Rasio Ketersediaan + 50% Rata-rata Cosine)
                 const rankingToko = Object.values(rekapToko).map(toko => {
-                    toko.skorRataRata = toko.totalSkor / toko.jumlahMenu;
+                    const rataRataCosine = toko.totalSkorCosine / toko.jumlahSeluruhMenu;
+                    const rasioAman = toko.jumlahMenuAman / toko.jumlahSeluruhMenu;
+                    
+                    // Rumus Algoritma Utama Personalisasi Toko
+                    toko.skorAkhirToko = (rasioAman * 0.5) + (rataRataCosine * 0.5);
                     return toko;
                 });
 
                 // C. Mengurutkan toko dari skor tertinggi ke terendah
-                rankingToko.sort((a, b) => b.skorRataRata - a.skorRataRata);
+                rankingToko.sort((a, b) => b.skorAkhirToko - a.skorAkhirToko);
 
                 // D. Cetak ke HTML
                 grid.innerHTML = ''; 
@@ -151,14 +158,20 @@
                 rankingToko.forEach((toko, index) => {
                     const rank = index + 1;
                     let badgeColor = '';
-                    let badgeText = `#${rank} Paling Aman`;
+                    let badgeText = '';
 
-                    if (rank === 2) {
-                        badgeColor = 'style="background-color: var(--secondary);"';
-                        badgeText = `#${rank} Aman`;
-                    } else if (rank > 2) {
-                        badgeColor = 'style="background-color: var(--accent);"';
-                        badgeText = `#${rank} Cukup Aman`;
+                    if (rank === 1) {
+                        // Selalu Rank 1 (Tertinggi)
+                        badgeColor = 'style="background-color: var(--primary); color: white;"';
+                        badgeText = `#${rank} Sangat Direkomendasikan`;
+                    } else if (toko.skorAkhirToko >= 0.85) {
+                        // Skor >= 85%
+                        badgeColor = 'style="background-color: var(--secondary); color: white;"';
+                        badgeText = `#${rank} Direkomendasikan`;
+                    } else {
+                        // Skor dibawah 85%
+                        badgeColor = 'style="background-color: var(--accent); color: white;"'; // Kuning/Oranye
+                        badgeText = `#${rank} Pilihan Terbatas`;
                     }
 
                     const imgSrc = gambarToko[toko.nama] || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800";
@@ -168,7 +181,8 @@
                         <div class="shop-card">
                             <div class="shop-card-header">
                                 <h3>${toko.nama}</h3>
-                                <p style="font-size: 12px; color: gray; margin-top: 5px;">Tingkat Kecocokan: ${(toko.skorRataRata * 100).toFixed(1)}%</p>
+                                <p style="font-size: 14px; font-weight: bold; color: var(--primary); margin-top: 5px;">Kecocokan: ${(toko.skorAkhirToko * 100).toFixed(1)}%</p>
+                                <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 2px;">✔️ Tersedia <strong>${toko.jumlahMenuAman} dari ${toko.jumlahSeluruhMenu}</strong> menu aman</p>
                             </div>
                             <div class="shop-card-image">
                                 <div class="rank-badge" ${badgeColor}>${badgeText}</div>
@@ -199,29 +213,30 @@
 
                 if (userDoc.exists()) {
                     const tingkatGerd = userDoc.data().tingkatGerd;
-                    let profilIdealAman = [1.0, 1.0, 1.0]; // Default Paling Aman
+                    
+                    // Vektor Ideal SELALU 1.0 (Standar Matematis Mutlak)
+                    const profilIdealAman = [1.0, 1.0, 1.0]; 
+                    let batasSkorMinimal = 0;
 
-                    // Sesuaikan Vektor Target Rekomendasi berdasarkan Tingkat GERD
+                    // Sesuaikan Threshold (Batas Aman) berdasarkan Tingkat GERD
                     if (tingkatGerd === 1) {
-                        statusGerdUI.innerHTML = "Profil Anda: Tingkat GERD 1 (Ringan)";
-                        profilIdealAman = [0.5, 0.5, 0.5]; // Toleran terhadap asam
+                        statusGerdUI.innerHTML = "Profil Anda: <strong>Tingkat GERD 1 (Ringan)</strong>";
+                        batasSkorMinimal = 0.0; // Semua menu dianggap aman
                     } else if (tingkatGerd === 2) {
-                        statusGerdUI.innerHTML = "Profil Anda: Tingkat GERD 2 (Sedang)";
-                        profilIdealAman = [0.8, 0.8, 0.8]; // Cukup butuh yang aman
+                        statusGerdUI.innerHTML = "Profil Anda: <strong>Tingkat GERD 2 (Sedang)</strong>";
+                        batasSkorMinimal = 0.65; // Hanya menu >= 0.65 yang dihitung sebagai Menu Aman
                     } else if (tingkatGerd === 3) {
-                        statusGerdUI.innerHTML = "Profil Anda: Tingkat GERD 3 (Berat)";
-                        profilIdealAman = [1.0, 1.0, 1.0]; // Wajib sangat aman
+                        statusGerdUI.innerHTML = "Profil Anda: <strong>Tingkat GERD 3 (Berat)</strong>";
+                        batasSkorMinimal = 0.85; // Hanya menu >= 0.85 yang dihitung sebagai Menu Aman
                     }
 
-                    // Jalankan algoritma rekomendasi dengan vektor profil yang sudah disesuaikan
-                    tampilkanRekomendasi(profilIdealAman);
+                    // Jalankan algoritma rekomendasi
+                    tampilkanRekomendasi(profilIdealAman, batasSkorMinimal);
 
                 } else {
-                    // Kalau entah bagaimana user ini lolos tanpa isi kuesioner
                     window.location.href = "kuesioner.html";
                 }
             } else {
-                // Jika tidak ada user yang login, lempar ke halaman login
                 window.location.href = "login.html";
             }
         });

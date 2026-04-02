@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - Sistem Rekomendasi Kopi GERD</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .profile-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 64px - 100px);
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card {
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-info-box {
+            text-align: center;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Style Avatar Inisial Huruf */
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 16px auto;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(82, 182, 154, 0.3);
+        }
+
+        .user-info-box h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 4px;
+            text-transform: capitalize;
+        }
+
+        .user-info-box p {
+            font-size: 14px;
+            color: var(--muted-foreground);
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: var(--background);
+        }
+
+        .option-label:hover {
+            background-color: var(--muted);
+        }
+
+        .option-input:checked + .option-label {
+            border-color: var(--primary);
+            background-color: rgba(82, 182, 154, 0.05);
+        }
+
+        .option-input:checked + .option-label .option-title {
+            color: var(--primary-dark);
+        }
+
+        .option-input {
+            display: none;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--foreground);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 13px;
+            color: var(--muted-foreground);
+        }
+
+        .btn-logout {
+            width: 100%;
+            justify-content: center;
+            color: #ef4444;
+            border-color: #ef4444;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .btn-logout:hover {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <div class="header-content" style="justify-content: space-between;">
+                <div class="logo">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                <div class="header-actions">
+                    <a href="daftar_rekomendasi.html" class="btn btn-outline" style="border-radius: 8px;">
+                        Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 0;">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container profile-wrapper">
+            <div class="profile-card">
+                
+                <div class="user-info-box">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <h2 id="userNameDisplay">Memuat...</h2>
+                    <p id="userEmailDisplay">Memuat email...</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Modifikasi Toleransi Lambung</h3>
+                    <p style="font-size: 14px; color: var(--muted-foreground);">Sesuaikan tingkat sensitivitas GERD Anda untuk mendapatkan rekomendasi menu yang paling tepat saat ini.</p>
+                </div>
+
+                <form id="formUpdateProfil">
+                    <div class="option-group">
+                        <input type="radio" name="update_gerd" id="level1" class="option-input" value="1">
+                        <label for="level1" class="option-label">
+                            <div class="option-content">
+                                <span class="option-title">Tingkat 1 (Ringan)</span>
+                                <span class="option-desc">Toleransi tinggi. Menampilkan hampir semua menu kopi yang tersedia.</span>
+                            </div>
+                        </label>
+
+                        <input type="radio" name="update_gerd" id="level2" class="option-input" value="2">
+                        <label for="level2" class="option-label">
+                            <div class="option-content">
+                                <span class="option-title">Tingkat 2 (Sedang)</span>
+                                <span class="option-desc">Toleransi moderat. Memfilter menu yang memiliki risiko asam menengah.</span>
+                            </div>
+                        </label>
+
+                        <input type="radio" name="update_gerd" id="level3" class="option-input" value="3">
+                        <label for="level3" class="option-label">
+                            <div class="option-content">
+                                <span class="option-title">Tingkat 3 (Berat)</span>
+                                <span class="option-desc">Toleransi rendah. Hanya menampilkan menu dengan tingkat keamanan tertinggi.</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="btnSimpan" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; font-weight: 600;">
+                        Simpan Perubahan
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="kuesioner.html" style="font-size: 14px; color: var(--primary); text-decoration: none; font-weight: 500;">Isi Ulang Kuesioner Gejala</a>
+                    </div>
+
+                    <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);">
+                        <button type="button" id="btnLogout" class="btn btn-outline btn-logout">
+                            Keluar dari Akun (Logout)
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 - Skripsi Sistem Rekomendasi Kopi GERD | Universitas Pelita Harapan Medan</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
+            authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+            projectId: "sistem-rekomendasi-kopi-gerd",
+            storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+            messagingSenderId: "955125085378",
+            appId: "1:955125085378:web:d6211bb582ace6e557775b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUserUid = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                document.getElementById('userEmailDisplay').innerText = user.email;
+
+                try {
+                    const userDoc = await getDoc(doc(db, "Users", user.uid));
+                    let namaUser = "";
+
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        // Menggunakan 'namaLengkap' sesuai field di app.js
+                        namaUser = data.namaLengkap || data.nama || data.name || "";
+
+                        if (data.tingkatGerd) {
+                            const radio = document.querySelector(`input[name="update_gerd"][value="${data.tingkatGerd}"]`);
+                            if (radio) radio.checked = true;
+                        }
+                    }
+
+                    // Fallback jika nama kosong: ambil dari email
+                    if (!namaUser && user.email) {
+                        namaUser = user.email.split('@')[0];
+                    }
+
+                    document.getElementById('userNameDisplay').innerText = namaUser || "Pengguna";
+                    
+                    // Set Inisial Huruf Pertama
+                    const inisial = namaUser ? namaUser.charAt(0).toUpperCase() : "U";
+                    document.getElementById('avatarInitial').innerText = inisial;
+
+                } catch (err) {
+                    console.error("Gagal memuat profil:", err);
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        const formUpdate = document.getElementById('formUpdateProfil');
+        const btnSimpan = document.getElementById('btnSimpan');
+
+        formUpdate.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const selected = document.querySelector('input[name="update_gerd"]:checked');
+            if (!selected) return;
+
+            const newLevel = parseInt(selected.value);
+            btnSimpan.innerText = "Menyimpan...";
+            btnSimpan.disabled = true;
+
+            try {
+                await updateDoc(doc(db, "Users", currentUserUid), {
+                    tingkatGerd: newLevel
+                });
+                alert("Berhasil memperbarui tingkat toleransi lambung!");
+                window.location.href = "daftar_rekomendasi.html";
+            } catch (err) {
+                alert("Gagal menyimpan: " + err.message);
+                btnSimpan.innerText = "Simpan Perubahan";
+                btnSimpan.disabled = false;
+            }
+        });
+
+        const btnLogout = document.getElementById('btnLogout');
+        btnLogout.addEventListener('click', async () => {
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
+                try {
+                    await signOut(auth);
+                    window.location.href = "login.html";
+                } catch (err) {
+                    alert("Gagal logout: " + err.message);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

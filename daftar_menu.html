@@ -135,7 +135,7 @@
         }
 
         // 6. FETCH MENU DARI FIREBASE & RENDER HTML (DINAMIS BERDASARKAN GERD)
-        async function tampilkanMenu(profilIdealAman) {
+        async function tampilkanMenu(profilIdealAman, batasSkorMinimal) {
             const grid = document.querySelector('.menu-grid');
             grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menyusun menu teraman untuk lambung Anda...</p>';
 
@@ -177,25 +177,28 @@
                         levelText = "Tingkat GERD 2 (Cukup Aman)";
                     }
 
-                    let imgMenu = data.url_gambar || "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
-                    
-                    const cardHTML = `
-                        <div class="menu-item-wrapper" data-level="${level}">
-                            <a href="detail_menu.html?id_menu=${docId}" style="text-decoration: none; color: inherit; display: block;">
-                                <div class="menu-card">
-                                    <img src="${imgMenu}" alt="${data.nama_menu}">
-                                    <div class="gerd-indicator ${levelClass}">${levelText}</div>
-                                </div>
-                                <div class="menu-name">${data.nama_menu}</div>
-                                <p style="font-size:12px; color:gray; text-align:center; margin-top:5px;">Skor Kecocokan: ${(skor * 100).toFixed(1)}%</p>
-                            </a>
-                        </div>
-                    `;
+                    // TAHAP PERSONALISASI: Hanya masukkan ke Array JIKA skor memenuhi Threshold Toleransi Lambung
+                    if (skor >= batasSkorMinimal) {
+                        let imgMenu = data.url_gambar || "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
+                        
+                        const cardHTML = `
+                            <div class="menu-item-wrapper" data-level="${level}">
+                                <a href="detail_menu.html?id_menu=${docId}" style="text-decoration: none; color: inherit; display: block;">
+                                    <div class="menu-card">
+                                        <img src="${imgMenu}" alt="${data.nama_menu}">
+                                        <div class="gerd-indicator ${levelClass}">${levelText}</div>
+                                    </div>
+                                    <div class="menu-name">${data.nama_menu}</div>
+                                    <p style="font-size:12px; color:gray; text-align:center; margin-top:5px;">Skor Kecocokan: ${(skor * 100).toFixed(1)}%</p>
+                                </a>
+                            </div>
+                        `;
 
-                    arrayMenu.push({
-                        elemenHTML: cardHTML,
-                        skorAlgoritma: skor
-                    });
+                        arrayMenu.push({
+                            elemenHTML: cardHTML,
+                            skorAlgoritma: skor
+                        });
+                    }
                 });
 
                 // Urutkan Array secara Descending (Menu teraman / skor tertinggi ada di atas)
@@ -238,12 +241,14 @@
                 });
             }
 
-            searchInput.addEventListener('input', doFilter);
-            filterDropdown.addEventListener('change', doFilter);
+            if (searchInput && filterDropdown) {
+                searchInput.addEventListener('input', doFilter);
+                filterDropdown.addEventListener('change', doFilter);
+            }
         }
 
         // ==========================================
-        // 8. PENGECEKAN USER AKTIF & EKSEKUSI
+        // 8. PENGECEKAN USER AKTIF & EKSEKUSI (THRESHOLDING DINAMIS)
         // ==========================================
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -252,22 +257,25 @@
 
                 if (userDoc.exists()) {
                     const tingkatGerd = userDoc.data().tingkatGerd;
-                    let profilIdealAman = [1.0, 1.0, 1.0]; 
+                    
+                    // Vektor Ideal SELALU 1.0 (Standar Matematis Paling Sempurna/Aman)
+                    const profilIdealAman = [1.0, 1.0, 1.0]; 
+                    let batasSkorMinimal = 0;
 
                     // Set target keamanan dan ubah teks UI
                     if (tingkatGerd === 1) {
                         statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 1 (Ringan)";
-                        profilIdealAman = [0.5, 0.5, 0.5]; 
+                        batasSkorMinimal = 0.0; // Tampilkan Semua
                     } else if (tingkatGerd === 2) {
-                        statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 2 (Sedang)";
-                        profilIdealAman = [0.8, 0.8, 0.8]; 
+                        statusIndicator.innerText = "Sistem memfilter menu untuk Profil Anda: GERD Tingkat 2 (Sedang)";
+                        batasSkorMinimal = 0.65; // Hanya menu dengan skor >= 0.65 (Level 1 & 2)
                     } else if (tingkatGerd === 3) {
-                        statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 3 (Berat)";
-                        profilIdealAman = [1.0, 1.0, 1.0]; 
+                        statusIndicator.innerText = "Sistem memfilter ketat menu untuk Profil Anda: GERD Tingkat 3 (Berat)";
+                        batasSkorMinimal = 0.85; // Sangat Ketat, hanya menu dengan skor >= 0.85 (Level 1)
                     }
 
-                    // Jalankan fungsi tampilkan menu dengan vektor target si user
-                    tampilkanMenu(profilIdealAman);
+                    // Jalankan fungsi tampilkan menu dengan vektor target si user beserta batasannya
+                    tampilkanMenu(profilIdealAman, batasSkorMinimal);
 
                 } else {
                     window.location.href = "kuesioner.html";
