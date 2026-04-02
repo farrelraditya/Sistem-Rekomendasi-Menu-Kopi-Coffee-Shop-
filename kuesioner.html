@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Toleransi Lambung - GERD CoffeeRec</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Penyesuaian Header agar judul di tengah */
+        .header-content {
+            position: relative;
+            justify-content: center; 
+        }
+
+        .logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        /* Tambahan khusus kuesioner agar soal dan radio button lebih rapi */
+        .question-card {
+            margin-bottom: 28px;
+            text-align: left; 
+        }
+        
+        .question-card strong {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--foreground);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .radio-options label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--muted-foreground);
+            cursor: pointer;
+        }
+
+        .radio-options input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--primary); /* Mengubah warna default bulatannya menjadi hijau senada */
+            transform: scale(1.1); /* Sedikit membesarkan tombol klik */
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo logo-left">
+                    <div class="logo-icon">G</div>
+                    <span>GERD CoffeeRec</span>
+                </div>
+                
+                <div class="header-title">
+                    Kuesioner Profiling
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 0;">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="container auth-wrapper">
+            <div class="auth-card" style="max-width: 600px;">
+                <div class="auth-card-header">
+                    <h1>Analisis Toleransi Lambung Anda</h1>
+                    <p>Jawab 3 pertanyaan singkat ini agar algoritma sistem dapat menyusun rekomendasi menu kopi yang paling aman dan presisi untuk Anda.</p>
+                </div>
+
+                <form id="formKuesioner">
+                    
+                    <div class="question-card">
+                        <strong>1. Seberapa sering Anda merasakan sensasi panas di dada (heartburn) atau asam lambung naik dalam satu bulan terakhir?</strong>
+                        <div class="radio-options">
+                            <label><input type="radio" name="q1" value="1" required> Hampir tidak pernah / Tidak ada keluhan</label>
+                            <label><input type="radio" name="q1" value="2"> Kadang-kadang (1-2 kali seminggu)</label>
+                            <label><input type="radio" name="q1" value="3"> Sangat sering (Hampir setiap hari)</label>
+                        </div>
+                    </div>
+
+                    <div class="question-card">
+                        <strong>2. Apakah Anda pernah didiagnosis memiliki riwayat Maag kronis atau GERD oleh dokter?</strong>
+                        <div class="radio-options">
+                            <label><input type="radio" name="q2" value="1" required> Tidak pernah, lambung saya sehat</label>
+                            <label><input type="radio" name="q2" value="2"> Pernah sakit Maag ringan, tapi tidak parah</label>
+                            <label><input type="radio" name="q2" value="3"> Ya, saya memiliki riwayat GERD / Maag sensitif</label>
+                        </div>
+                    </div>
+
+                    <div class="question-card">
+                        <strong>3. Berdasarkan pengalaman, apa reaksi lambung Anda setelah meminum kopi hitam pekat (seperti Americano/Tubruk)?</strong>
+                        <div class="radio-options">
+                            <label><input type="radio" name="q3" value="1" required> Aman saja, tidak ada reaksi negatif</label>
+                            <label><input type="radio" name="q3" value="2"> Sedikit kembung atau mual jika perut sedang kosong</label>
+                            <label><input type="radio" name="q3" value="3"> Langsung perih, mual, dada panas, atau jantung berdebar</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnHitungGerd" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; font-weight: 600; margin-top: 10px;">
+                        Simpan Profil & Lihat Rekomendasi
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Informasi Seputar Website &copy; 2026 - Skripsi Universitas Pelita Harapan Medan</p>
+        </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+    <script>
+        // Header Scroll Effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

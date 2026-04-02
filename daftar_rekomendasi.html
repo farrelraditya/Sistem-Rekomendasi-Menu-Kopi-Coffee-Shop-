@@ -16,7 +16,7 @@
                 </div>
                 
                 <div class="header-actions">
-                    <a href="index.html" class="btn btn-out">Logout</a>
+                    <a href="#" id="btnLogout" class="btn btn-out">Logout</a>
                 </div>
             </div>
         </div>
@@ -31,89 +31,13 @@
             <div class="recommendation-header">
                 <h1>Rekomendasi Coffee Shop</h1>
                 <p>💡 <strong>Info:</strong> Urutan teratas adalah Coffee Shop yang memiliki menu aman untuk lambung paling banyak.</p>
+                <div id="statusGerdUser" style="margin-top: 15px; padding: 10px; background-color: #e2e8f0; border-radius: 8px; display: inline-block; font-weight: bold; color: var(--foreground);">
+                    Menganalisis profil lambung Anda...
+                </div>
             </div>
 
-            <div class="shops-grid">
-                
-                <div class="shop-card">
-                    <div class="shop-card-header">
-                        <h3>Coffee Shop A</h3>
-                    </div>
-                    <div class="shop-card-image">
-                        <div class="rank-badge">#1 Paling Aman</div>
-                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop A">
-                    </div>
-                    <div class="shop-card-footer">
-                        <a href="daftar_menu.html?id=1" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
-                    </div>
+            <div class="shops-grid" id="gridRekomendasi">
                 </div>
-
-                <div class="shop-card">
-                    <div class="shop-card-header">
-                        <h3>Coffee Shop B</h3>
-                    </div>
-                    <div class="shop-card-image">
-                        <div class="rank-badge" style="background-color: var(--secondary);">#2 Aman</div>
-                        <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop B">
-                    </div>
-                    <div class="shop-card-footer">
-                        <a href="daftar_menu.html?id=2" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
-                    </div>
-                </div>
-
-                <div class="shop-card">
-                    <div class="shop-card-header">
-                        <h3>Coffee Shop C</h3>
-                    </div>
-                    <div class="shop-card-image">
-                        <div class="rank-badge" style="background-color: var(--accent);">#3 Cukup Aman</div>
-                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop C">
-                    </div>
-                    <div class="shop-card-footer">
-                        <a href="daftar_menu.html?id=3" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
-                    </div>
-                </div>
-
-                <div class="shop-card">
-                    <div class="shop-card-header">
-                        <h3>Coffee Shop A</h3>
-                    </div>
-                    <div class="shop-card-image">
-                        <div class="rank-badge">#1 Paling Aman</div>
-                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop A">
-                    </div>
-                    <div class="shop-card-footer">
-                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
-                    </div>
-                </div>
-
-                <div class="shop-card">
-                    <div class="shop-card-header">
-                        <h3>Coffee Shop B</h3>
-                    </div>
-                    <div class="shop-card-image">
-                        <div class="rank-badge" style="background-color: var(--secondary);">#2 Aman</div>
-                        <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop B">
-                    </div>
-                    <div class="shop-card-footer">
-                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
-                    </div>
-                </div>
-
-                <div class="shop-card">
-                    <div class="shop-card-header">
-                        <h3>Coffee Shop C</h3>
-                    </div>
-                    <div class="shop-card-image">
-                        <div class="rank-badge" style="background-color: var(--accent);">#3 Cukup Aman</div>
-                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800" alt="Gambar Coffee Shop C">
-                    </div>
-                    <div class="shop-card-footer">
-                        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Lihat Menu</a>
-                    </div>
-                </div>
-
-            </div>
         </div>
     </section>
 
@@ -124,24 +48,26 @@
     </footer>
 
     <script type="module">
-        // 1. Import Firebase dan Firestore
+        // 1. Import Firebase, Firestore, dan Auth
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // 2. KONFIGURASI FIREBASE (PENTING: Ganti dengan milikmu yang asli!)
+        // 2. KONFIGURASI FIREBASE
         const firebaseConfig = {
-        apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
-        authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
-        projectId: "sistem-rekomendasi-kopi-gerd",
-        storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
-        messagingSenderId: "955125085378",
-        appId: "1:955125085378:web:d6211bb582ace6e557775b"
+            apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
+            authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+            projectId: "sistem-rekomendasi-kopi-gerd",
+            storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+            messagingSenderId: "955125085378",
+            appId: "1:955125085378:web:d6211bb582ace6e557775b"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        // Header Scroll Effect (Bawaan Imelda)
+        // Header Scroll Effect
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 10) {
@@ -150,6 +76,17 @@
                 header.classList.remove('scrolled');
             }
         });
+
+        // Fitur Logout
+        const btnLogout = document.getElementById('btnLogout');
+        if (btnLogout) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                signOut(auth).then(() => {
+                    window.location.href = "login.html";
+                });
+            });
+        }
 
         // ==========================================
         // 3. ALGORITMA COSINE SIMILARITY
@@ -167,22 +104,19 @@
             return dotProduct / (magnitudeUser * magnitudeMenu);
         }
 
-        // Vektor Ideal untuk GERD (Biji: 1.0, Roast: 1.0, Seduh: 1.0)
-        const profilIdealAman = [1.0, 1.0, 1.0];
-
         // ==========================================
-        // 4. FETCH DATA & PROSES RANKING
+        // 4. FETCH DATA & PROSES RANKING (DINAMIS BERDASARKAN GERD)
         // ==========================================
-        async function tampilkanRekomendasi() {
-            const grid = document.querySelector('.shops-grid');
-            grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menganalisis algoritma dan menarik data dari Firebase...</p>';
+        async function tampilkanRekomendasi(profilIdealAman) {
+            const grid = document.getElementById('gridRekomendasi');
+            grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menghitung kecocokan menu dengan lambung Anda...</p>';
 
             try {
                 const menuRef = collection(db, "MenuKopi");
                 const snapshot = await getDocs(menuRef);
                 const rekapToko = {};
 
-                // A. Menghitung skor setiap menu dan mengelompokkannya per toko
+                // A. Menghitung skor setiap menu terhadap vektor user
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const vektorMenu = [data.bobot_biji, data.bobot_roast, data.bobot_seduh];
@@ -195,19 +129,18 @@
                     rekapToko[data.id_toko].jumlahMenu += 1;
                 });
 
-                // B. Menghitung rata-rata skor keamanan tiap toko untuk menentukan ranking
+                // B. Menghitung rata-rata skor keamanan tiap toko
                 const rankingToko = Object.values(rekapToko).map(toko => {
                     toko.skorRataRata = toko.totalSkor / toko.jumlahMenu;
                     return toko;
                 });
 
-                // C. Mengurutkan toko dari skor tertinggi (teraman) ke terendah
+                // C. Mengurutkan toko dari skor tertinggi ke terendah
                 rankingToko.sort((a, b) => b.skorRataRata - a.skorRataRata);
 
-                // D. Cetak ke HTML buatan Imelda
-                grid.innerHTML = ''; // Bersihkan loading
+                // D. Cetak ke HTML
+                grid.innerHTML = ''; 
                 
-                // Siapkan gambar default untuk masing-masing toko
                 const gambarToko = {
                     "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
                     "Fore": "images_coffeeshop/Fore_Mansyur.jpeg",
@@ -228,14 +161,14 @@
                         badgeText = `#${rank} Cukup Aman`;
                     }
 
-                    const imgSrc = gambarToko[toko.nama] || gambarToko["Starbucks"];
-                    const linkKeMenu = `daftar_menu.html?id=${encodeURIComponent(toko.nama)}`; // Kirim nama toko ke URL
+                    const imgSrc = gambarToko[toko.nama] || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800";
+                    const linkKeMenu = `daftar_menu.html?id=${encodeURIComponent(toko.nama)}`; 
 
                     const cardHTML = `
                         <div class="shop-card">
                             <div class="shop-card-header">
                                 <h3>${toko.nama}</h3>
-                                <p style="font-size: 12px; color: gray; margin-top: 5px;">Skor Medis: ${(toko.skorRataRata * 100).toFixed(1)}%</p>
+                                <p style="font-size: 12px; color: gray; margin-top: 5px;">Tingkat Kecocokan: ${(toko.skorRataRata * 100).toFixed(1)}%</p>
                             </div>
                             <div class="shop-card-image">
                                 <div class="rank-badge" ${badgeColor}>${badgeText}</div>
@@ -251,12 +184,48 @@
 
             } catch (error) {
                 console.error("Error mengambil data: ", error);
-                grid.innerHTML = '<p style="color:red;">Gagal memuat rekomendasi. Periksa koneksi atau rules Firebase.</p>';
+                grid.innerHTML = '<p style="color:red; text-align:center;">Gagal memuat rekomendasi. Periksa koneksi atau rules Firebase.</p>';
             }
         }
 
-        // 5. Jalankan fungsi saat halaman dimuat
-        tampilkanRekomendasi();
+        // ==========================================
+        // 5. PENGECEKAN USER AKTIF & EKSEKUSI
+        // ==========================================
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User sedang login, ambil data profilnya dari Firestore
+                const userDoc = await getDoc(doc(db, "Users", user.uid));
+                const statusGerdUI = document.getElementById('statusGerdUser');
+
+                if (userDoc.exists()) {
+                    const tingkatGerd = userDoc.data().tingkatGerd;
+                    let profilIdealAman = [1.0, 1.0, 1.0]; // Default Paling Aman
+
+                    // Sesuaikan Vektor Target Rekomendasi berdasarkan Tingkat GERD
+                    if (tingkatGerd === 1) {
+                        statusGerdUI.innerHTML = "Profil Anda: Tingkat GERD 1 (Ringan)";
+                        profilIdealAman = [0.5, 0.5, 0.5]; // Toleran terhadap asam
+                    } else if (tingkatGerd === 2) {
+                        statusGerdUI.innerHTML = "Profil Anda: Tingkat GERD 2 (Sedang)";
+                        profilIdealAman = [0.8, 0.8, 0.8]; // Cukup butuh yang aman
+                    } else if (tingkatGerd === 3) {
+                        statusGerdUI.innerHTML = "Profil Anda: Tingkat GERD 3 (Berat)";
+                        profilIdealAman = [1.0, 1.0, 1.0]; // Wajib sangat aman
+                    }
+
+                    // Jalankan algoritma rekomendasi dengan vektor profil yang sudah disesuaikan
+                    tampilkanRekomendasi(profilIdealAman);
+
+                } else {
+                    // Kalau entah bagaimana user ini lolos tanpa isi kuesioner
+                    window.location.href = "kuesioner.html";
+                }
+            } else {
+                // Jika tidak ada user yang login, lempar ke halaman login
+                window.location.href = "login.html";
+            }
+        });
+
     </script>
 </body>
 </html>

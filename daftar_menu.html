@@ -40,6 +40,8 @@
                         <p><strong>Alamat:</strong> Jl. Setiabudi No. 123, Medan, Sumatera Utara</p>
                     </div>
                     <div class="info-box" style="background-color: rgba(82, 182, 154, 0.05);">
+                        <p id="userProfileIndicator" style="color: var(--primary); font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px;">Menganalisis profil lambung Anda...</p>
+                        
                         <h3 style="margin-bottom: 8px;">Penjelasan Tingkatan GERD</h3>
                         <p><strong>Tingkat 1:</strong> Sangat Aman (Arabika, Cold Brew).<br>
                         <strong>Tingkat 2:</strong> Cukup Aman (House Blend, Medium Roast).<br>
@@ -63,38 +65,7 @@
             </div>
 
             <div class="menu-grid">
-                
-                <div class="menu-item-wrapper">
-                    <a href="detail_menu.html?id_menu=1" style="text-decoration: none; color: inherit; display: block;">
-                        <div class="menu-card">
-                            <img src="https://images.unsplash.com/photo-1587080413959-06b859fb107d?q=80&w=1492&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Minuman A">
-                            <div class="gerd-indicator level-1">Tingkat GERD 1</div>
-                        </div>
-                        <div class="menu-name">Minuman A (Cold Brew)</div>
-                    </a>
                 </div>
-
-                <div class="menu-item-wrapper">
-                    <a href="detail_menu.html?id_menu=2" style="text-decoration: none; color: inherit; display: block;">
-                        <div class="menu-card">
-                            <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=600" alt="Minuman B">
-                            <div class="gerd-indicator level-2">Tingkat GERD 2</div>
-                        </div>
-                        <div class="menu-name">Minuman B (Cafe Latte)</div>
-                    </a>
-                </div>
-
-                <div class="menu-item-wrapper">
-                    <a href="detail_menu.html?id_menu=3" style="text-decoration: none; color: inherit; display: block;">
-                        <div class="menu-card">
-                            <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600" alt="Minuman C">
-                            <div class="gerd-indicator level-3">Tingkat GERD 3</div>
-                        </div>
-                        <div class="menu-name">Minuman C (Espresso)</div>
-                    </a>
-                </div>
-
-            </div>
         </div>
     </section>
 
@@ -105,22 +76,24 @@
     </footer>
 
     <script type="module">
-        // 1. Import Firebase dan Firestore Query Tools
+        // 1. Import Firebase, Auth, dan Firestore Query Tools
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // 2. KONFIGURASI FIREBASE
         const firebaseConfig = {
-        apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
-        authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
-        projectId: "sistem-rekomendasi-kopi-gerd",
-        storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
-        messagingSenderId: "955125085378",
-        appId: "1:955125085378:web:d6211bb582ace6e557775b"
+            apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
+            authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+            projectId: "sistem-rekomendasi-kopi-gerd",
+            storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+            messagingSenderId: "955125085378",
+            appId: "1:955125085378:web:d6211bb582ace6e557775b"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         // 3. Header Scroll Effect
         const header = document.getElementById('header');
@@ -129,15 +102,13 @@
             else header.classList.remove('scrolled');
         });
 
-        // 4. LOGIKA MENANGKAP ID TOKO & UPDATE PROFIL
+        // 4. LOGIKA MENANGKAP ID TOKO & UPDATE PROFIL VISUAL
         const urlParams = new URLSearchParams(window.location.search);
         const idToko = urlParams.get('id');
 
-        // Update teks profil toko di layar
         document.querySelector('.info-box h2').innerText = `Nama Coffee Shop: ${idToko}`;
         document.querySelector('.shop-profile-image h3').innerText = idToko;
         
-        // Dictionary Gambar Toko
         const gambarToko = {
             "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
             "Fore": "images_coffeeshop/Fore_Mansyur.jpeg", 
@@ -145,12 +116,8 @@
             "Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
         };
         
-        // Pasang gambar yang sesuai dengan fitur pelacak Error
         if (gambarToko[idToko]) {
-            console.log("BERHASIL: Mengubah gambar toko menjadi " + gambarToko[idToko]);
             document.querySelector('.shop-profile-image img').src = gambarToko[idToko];
-        } else {
-            console.warn("GAGAL: Nama toko '" + idToko + "' tidak ada di dalam dictionary gambarToko!");
         }
 
         // 5. ALGORITMA COSINE SIMILARITY
@@ -166,12 +133,11 @@
             if (magnitudeUser === 0 || magnitudeMenu === 0) return 0;
             return dotProduct / (magnitudeUser * magnitudeMenu);
         }
-        const profilIdealAman = [1.0, 1.0, 1.0];
 
-        // 6. FETCH MENU DARI FIREBASE & RENDER HTML
-        async function tampilkanMenu() {
+        // 6. FETCH MENU DARI FIREBASE & RENDER HTML (DINAMIS BERDASARKAN GERD)
+        async function tampilkanMenu(profilIdealAman) {
             const grid = document.querySelector('.menu-grid');
-            grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menarik data menu khusus toko ini...</p>';
+            grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menyusun menu teraman untuk lambung Anda...</p>';
 
             if (!idToko) {
                 grid.innerHTML = '<p style="color:red; text-align:center;">Error: Anda tidak memilih toko apapun.</p>';
@@ -179,27 +145,24 @@
             }
 
             try {
-                // Minta Firebase memfilter HANYA menu yang id_toko nya sama dengan idToko di URL
                 const q = query(collection(db, "MenuKopi"), where("id_toko", "==", idToko));
                 const snapshot = await getDocs(q);
                 
-                grid.innerHTML = ''; // Bersihkan teks loading
+                grid.innerHTML = ''; 
 
                 if (snapshot.empty) {
                     grid.innerHTML = '<p style="text-align:center; width: 100%;">Belum ada dataset menu untuk toko ini.</p>';
                     return;
                 }
 
-                // 1. Buat Array kosong untuk menampung menu sebelum dicetak
                 let arrayMenu = [];
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    const docId = doc.id; // Menyimpan ID Unik dokumen untuk halaman detail nanti
+                    const docId = doc.id; 
                     const vektorMenu = [data.bobot_biji, data.bobot_roast, data.bobot_seduh];
                     const skor = hitungCosineSimilarity(profilIdealAman, vektorMenu);
 
-                    // Menentukan Klasifikasi Tingkat GERD berdasarkan Skor Algoritma
                     let level = 3;
                     let levelClass = "level-3";
                     let levelText = "Tingkat GERD 3 (Kurang Aman)";
@@ -214,10 +177,8 @@
                         levelText = "Tingkat GERD 2 (Cukup Aman)";
                     }
 
-                    // Mengambil gambar asli menu dari database Firebase
-                    let imgMenu = data.url_gambar;
+                    let imgMenu = data.url_gambar || "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
                     
-                    // Siapkan elemen HTML untuk Card
                     const cardHTML = `
                         <div class="menu-item-wrapper" data-level="${level}">
                             <a href="detail_menu.html?id_menu=${docId}" style="text-decoration: none; color: inherit; display: block;">
@@ -226,24 +187,24 @@
                                     <div class="gerd-indicator ${levelClass}">${levelText}</div>
                                 </div>
                                 <div class="menu-name">${data.nama_menu}</div>
+                                <p style="font-size:12px; color:gray; text-align:center; margin-top:5px;">Skor Kecocokan: ${(skor * 100).toFixed(1)}%</p>
                             </a>
                         </div>
                     `;
 
-                    // 2. Masukkan HTML dan Skor-nya ke dalam Array
                     arrayMenu.push({
                         elemenHTML: cardHTML,
                         skorAlgoritma: skor
                     });
                 });
 
-                // 3. Urutkan Array secara Descending (Skor terbesar ke terkecil)
+                // Urutkan Array secara Descending (Menu teraman / skor tertinggi ada di atas)
                 arrayMenu.sort((a, b) => b.skorAlgoritma - a.skorAlgoritma);
 
-                // 4. Cetak isi Array yang sudah berurut tersebut ke layar HTML
                 arrayMenu.forEach(item => {
                     grid.innerHTML += item.elemenHTML;
                 });
+                
                 initFilterSearch();
 
             } catch (error) {
@@ -264,7 +225,7 @@
 
                 menuItems.forEach(function(item) {
                     const menuName = item.querySelector('.menu-name').innerText.toLowerCase();
-                    const itemLevel = item.getAttribute('data-level'); // Mengambil level (1, 2, 3) dari data HTML
+                    const itemLevel = item.getAttribute('data-level'); 
 
                     const matchKeyword = menuName.includes(keyword);
                     const matchLevel = (selectedLevel === "" || itemLevel === selectedLevel);
@@ -281,8 +242,40 @@
             filterDropdown.addEventListener('change', doFilter);
         }
 
-        // Eksekusi fungsi utama!
-        tampilkanMenu();
+        // ==========================================
+        // 8. PENGECEKAN USER AKTIF & EKSEKUSI
+        // ==========================================
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, "Users", user.uid));
+                const statusIndicator = document.getElementById('userProfileIndicator');
+
+                if (userDoc.exists()) {
+                    const tingkatGerd = userDoc.data().tingkatGerd;
+                    let profilIdealAman = [1.0, 1.0, 1.0]; 
+
+                    // Set target keamanan dan ubah teks UI
+                    if (tingkatGerd === 1) {
+                        statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 1 (Ringan)";
+                        profilIdealAman = [0.5, 0.5, 0.5]; 
+                    } else if (tingkatGerd === 2) {
+                        statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 2 (Sedang)";
+                        profilIdealAman = [0.8, 0.8, 0.8]; 
+                    } else if (tingkatGerd === 3) {
+                        statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 3 (Berat)";
+                        profilIdealAman = [1.0, 1.0, 1.0]; 
+                    }
+
+                    // Jalankan fungsi tampilkan menu dengan vektor target si user
+                    tampilkanMenu(profilIdealAman);
+
+                } else {
+                    window.location.href = "kuesioner.html";
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
     </script>
 </body>
 </html>
