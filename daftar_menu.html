@@ -64,8 +64,26 @@
                 </div>
             </div>
 
-            <div class="menu-grid">
+            <div id="status-loading" style="text-align:center; width: 100%; margin-top: 20px;"></div>
+
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 40px; margin-top: 20px;">
+                    
+                <div class="menu-section" style="width: 100%;">
+                    <h2 style="color:var(--primary); margin-bottom: 20px; padding-bottom: 5px; display: inline-block;">Direkomendasikan</h2>
+                    <div id="container-rekomendasi" class="menu-grid"></div>
                 </div>
+
+                <div class="menu-section" style="width: 100%;">
+                    <h2 style="color: var(--accent); margin-bottom: 20px; padding-bottom: 5px; display: inline-block;">Cukup Direkomendasikan</h2>
+                    <div id="container-cukup" class="menu-grid"></div>
+                </div>
+
+                <div class="menu-section" style="width: 100%;">
+                    <h2 style="color: #ef4444; margin-bottom: 20px; padding-bottom: 5px; display: inline-block;">Kurang Direkomendasikan</h2>
+                    <div id="container-kurang" class="menu-grid"></div>
+                </div>
+
+            </div>
         </div>
     </section>
 
@@ -106,8 +124,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const idToko = urlParams.get('id');
 
-        document.querySelector('.info-box h2').innerText = `Nama Coffee Shop: ${idToko}`;
-        document.querySelector('.shop-profile-image h3').innerText = idToko;
+        document.querySelector('.info-box h2').innerText = `Nama Coffee Shop: ${idToko || "Tidak Diketahui"}`;
+        document.querySelector('.shop-profile-image h3').innerText = idToko || "Coffee Shop";
         
         const gambarToko = {
             "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
@@ -116,7 +134,7 @@
             "Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
         };
         
-        if (gambarToko[idToko]) {
+        if (idToko && gambarToko[idToko]) {
             document.querySelector('.shop-profile-image img').src = gambarToko[idToko];
         }
 
@@ -134,28 +152,36 @@
             return dotProduct / (magnitudeUser * magnitudeMenu);
         }
 
-        // 6. FETCH MENU DARI FIREBASE & RENDER HTML (DINAMIS BERDASARKAN GERD)
+        // 6. FETCH MENU DARI FIREBASE (Hanya render kartunya saja)
         async function tampilkanMenu(profilIdealAman, batasSkorMinimal) {
-            const grid = document.querySelector('.menu-grid');
-            grid.innerHTML = '<p style="text-align:center; width: 100%;">Sedang menyusun menu teraman untuk lambung Anda...</p>';
+            const statusLoading = document.getElementById('status-loading');
+            const containerRekomendasi = document.getElementById('container-rekomendasi');
+            const containerCukup = document.getElementById('container-cukup');
+            const containerKurang = document.getElementById('container-kurang');
+
+            if(statusLoading) statusLoading.innerHTML = '<p style="color: gray;">Sedang menyusun dan mengelompokkan menu untuk lambung Anda...</p>';
+            
+            if(containerRekomendasi) containerRekomendasi.innerHTML = '';
+            if(containerCukup) containerCukup.innerHTML = '';
+            if(containerKurang) containerKurang.innerHTML = '';
 
             if (!idToko) {
-                grid.innerHTML = '<p style="color:red; text-align:center;">Error: Anda tidak memilih toko apapun.</p>';
+                if(statusLoading) statusLoading.innerHTML = '<p style="color:red; text-align:center;">Error: Anda tidak memilih toko apapun.</p>';
                 return;
             }
 
             try {
                 const q = query(collection(db, "MenuKopi"), where("id_toko", "==", idToko));
                 const snapshot = await getDocs(q);
-                
-                grid.innerHTML = ''; 
 
                 if (snapshot.empty) {
-                    grid.innerHTML = '<p style="text-align:center; width: 100%;">Belum ada dataset menu untuk toko ini.</p>';
+                    if(statusLoading) statusLoading.innerHTML = '<p style="text-align:center; width: 100%;">Belum ada dataset menu untuk toko ini.</p>';
                     return;
                 }
 
-                let arrayMenu = [];
+                let arrayRekomendasi = [];
+                let arrayCukup = [];
+                let arrayKurang = [];
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
@@ -177,74 +203,126 @@
                         levelText = "Tingkat GERD 2 (Cukup Aman)";
                     }
 
-                    // TAHAP PERSONALISASI: Hanya masukkan ke Array JIKA skor memenuhi Threshold Toleransi Lambung
-                    if (skor >= batasSkorMinimal) {
-                        let imgMenu = data.url_gambar || "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
-                        
-                        const cardHTML = `
-                            <div class="menu-item-wrapper" data-level="${level}">
-                                <a href="detail_menu.html?id_menu=${docId}" style="text-decoration: none; color: inherit; display: block;">
-                                    <div class="menu-card">
-                                        <img src="${imgMenu}" alt="${data.nama_menu}">
-                                        <div class="gerd-indicator ${levelClass}">${levelText}</div>
-                                    </div>
-                                    <div class="menu-name">${data.nama_menu}</div>
-                                    <p style="font-size:12px; color:gray; text-align:center; margin-top:5px;">Skor Kecocokan: ${(skor * 100).toFixed(1)}%</p>
-                                </a>
-                            </div>
-                        `;
+                    let imgMenu = data.url_gambar || "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
+                    
+                    const cardHTML = `
+                        <div class="menu-item-wrapper" data-level="${level}">
+                            <a href="detail_menu.html?id_menu=${docId}&id_toko=${encodeURIComponent(idToko)}" style="text-decoration: none; color: inherit; display: block;">
+                                <div class="menu-card">
+                                    <img src="${imgMenu}" alt="${data.nama_menu}">
+                                    <div class="gerd-indicator ${levelClass}">${levelText}</div>
+                                </div>
+                                <div class="menu-name">${data.nama_menu}</div>
+                                <p style="font-size:12px; color:gray; text-align:center; margin-top:5px;">Skor Kecocokan: ${(skor * 100).toFixed(1)}%</p>
+                            </a>
+                        </div>
+                    `;
 
-                        arrayMenu.push({
-                            elemenHTML: cardHTML,
-                            skorAlgoritma: skor
-                        });
+                    if (skor >= batasSkorMinimal) {
+                        arrayRekomendasi.push({ html: cardHTML, skorAlgoritma: skor });
+                    } else if (skor >= (batasSkorMinimal - 0.21)) {
+                        arrayCukup.push({ html: cardHTML, skorAlgoritma: skor });
+                    } else {
+                        arrayKurang.push({ html: cardHTML, skorAlgoritma: skor });
                     }
                 });
 
-                // Urutkan Array secara Descending (Menu teraman / skor tertinggi ada di atas)
-                arrayMenu.sort((a, b) => b.skorAlgoritma - a.skorAlgoritma);
+                arrayRekomendasi.sort((a, b) => b.skorAlgoritma - a.skorAlgoritma);
+                arrayCukup.sort((a, b) => b.skorAlgoritma - a.skorAlgoritma);
+                arrayKurang.sort((a, b) => b.skorAlgoritma - a.skorAlgoritma);
 
-                arrayMenu.forEach(item => {
-                    grid.innerHTML += item.elemenHTML;
-                });
+                if(statusLoading) statusLoading.innerHTML = ''; 
+
+                // Hanya render kartunya, JANGAN buat teks kosong di sini
+                if(arrayRekomendasi.length > 0) arrayRekomendasi.forEach(item => containerRekomendasi.innerHTML += item.html);
+                if(arrayCukup.length > 0) arrayCukup.forEach(item => containerCukup.innerHTML += item.html);
+                if(arrayKurang.length > 0) arrayKurang.forEach(item => containerKurang.innerHTML += item.html);
                 
+                // Serahkan urusan teks kosong ke fungsi Filter
                 initFilterSearch();
 
             } catch (error) {
                 console.error("Error mengambil menu:", error);
-                grid.innerHTML = '<p style="color:red; text-align:center;">Gagal memuat menu. Periksa koneksi internet.</p>';
+                if(statusLoading) statusLoading.innerHTML = '<p style="color:red; text-align:center;">Gagal memuat menu. Periksa koneksi internet.</p>';
             }
         }
 
-        // 7. FITUR PENCARIAN & FILTER
+        // 7. FITUR PENCARIAN & FILTER (LOGIKA FINAL 100% ANTI DOBEL)
         function initFilterSearch() {
             const searchInput = document.querySelector('.search-container input');
             const filterDropdown = document.querySelector('.filter-container select');
             
+            // Hapus pendeteksi event lama agar tidak bertumpuk jika fungsi dipanggil ulang
+            const newSearchInput = searchInput.cloneNode(true);
+            searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+            const newFilterDropdown = filterDropdown.cloneNode(true);
+            filterDropdown.parentNode.replaceChild(newFilterDropdown, filterDropdown);
+
             function doFilter() {
-                const keyword = searchInput.value.toLowerCase();
-                const selectedLevel = filterDropdown.value; 
-                const menuItems = document.querySelectorAll('.menu-item-wrapper');
+                const keyword = newSearchInput.value.toLowerCase();
+                const selectedLevel = newFilterDropdown.value; 
 
-                menuItems.forEach(function(item) {
-                    const menuName = item.querySelector('.menu-name').innerText.toLowerCase();
-                    const itemLevel = item.getAttribute('data-level'); 
+                const sectionsData = [
+                    { section: document.getElementById('container-rekomendasi').closest('.menu-section'), level: "1" },
+                    { section: document.getElementById('container-cukup').closest('.menu-section'), level: "2" },
+                    { section: document.getElementById('container-kurang').closest('.menu-section'), level: "3" }
+                ];
 
-                    const matchKeyword = menuName.includes(keyword);
-                    const matchLevel = (selectedLevel === "" || itemLevel === selectedLevel);
+                sectionsData.forEach(data => {
+                    const sec = data.section;
+                    const secLevel = data.level;
 
-                    if (matchKeyword && matchLevel) {
-                        item.style.display = "flex";
+                    if (!sec) return;
+
+                    const isSectionAllowed = (selectedLevel === "" || selectedLevel === secLevel);
+
+                    if (isSectionAllowed) {
+                        sec.style.display = "block"; // Munculkan judul kategori
+
+                        const itemsInside = sec.querySelectorAll('.menu-item-wrapper');
+                        const gridContainer = sec.querySelector('.menu-grid');
+                        let visibleCount = 0;
+
+                        // Filter kartu
+                        itemsInside.forEach(item => {
+                            const menuName = item.querySelector('.menu-name').innerText.toLowerCase();
+                            if (menuName.includes(keyword)) {
+                                item.style.display = "block";
+                                visibleCount++;
+                            } else {
+                                item.style.display = "none";
+                            }
+                        });
+
+                        // Sapu bersih teks kosong lama
+                        const oldMessages = sec.querySelectorAll('.pesan-kosong-filter');
+                        oldMessages.forEach(msg => msg.remove());
+
+                        // Buat SATU teks kosong jika memang tidak ada kartu
+                        if (visibleCount === 0) {
+                            const emptyMsg = document.createElement('p');
+                            emptyMsg.className = 'pesan-kosong-filter';
+                            emptyMsg.style.gridColumn = '1 / -1';
+                            emptyMsg.style.color = 'gray';
+                            emptyMsg.style.textAlign = 'center';
+                            emptyMsg.style.padding = '20px 0';
+                            emptyMsg.innerText = 'Tidak ada menu di kategori ini.';
+                            gridContainer.appendChild(emptyMsg);
+                        }
                     } else {
-                        item.style.display = "none";
+                        // Sembunyikan kategori yang tidak dipilih (beserta judulnya)
+                        sec.style.display = "none"; 
                     }
                 });
             }
 
-            if (searchInput && filterDropdown) {
-                searchInput.addEventListener('input', doFilter);
-                filterDropdown.addEventListener('change', doFilter);
+            if (newSearchInput && newFilterDropdown) {
+                newSearchInput.addEventListener('input', doFilter);
+                newFilterDropdown.addEventListener('change', doFilter);
             }
+
+            // Jalankan sekali di awal
+            doFilter(); 
         }
 
         // ==========================================
@@ -252,33 +330,34 @@
         // ==========================================
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const userDoc = await getDoc(doc(db, "Users", user.uid));
-                const statusIndicator = document.getElementById('userProfileIndicator');
+                try {
+                    const userDoc = await getDoc(doc(db, "Users", user.uid));
+                    const statusIndicator = document.getElementById('userProfileIndicator');
 
-                if (userDoc.exists()) {
-                    const tingkatGerd = userDoc.data().tingkatGerd;
-                    
-                    // Vektor Ideal SELALU 1.0 (Standar Matematis Paling Sempurna/Aman)
-                    const profilIdealAman = [1.0, 1.0, 1.0]; 
-                    let batasSkorMinimal = 0;
+                    if (userDoc.exists()) {
+                        const tingkatGerd = userDoc.data().tingkatGerd;
+                        
+                        const profilIdealAman = [1.0, 1.0, 1.0]; 
+                        let batasSkorMinimal = 0;
 
-                    // Set target keamanan dan ubah teks UI
-                    if (tingkatGerd === 1) {
-                        statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 1 (Ringan)";
-                        batasSkorMinimal = 0.0; // Tampilkan Semua
-                    } else if (tingkatGerd === 2) {
-                        statusIndicator.innerText = "Sistem memfilter menu untuk Profil Anda: GERD Tingkat 2 (Sedang)";
-                        batasSkorMinimal = 0.65; // Hanya menu dengan skor >= 0.65 (Level 1 & 2)
-                    } else if (tingkatGerd === 3) {
-                        statusIndicator.innerText = "Sistem memfilter ketat menu untuk Profil Anda: GERD Tingkat 3 (Berat)";
-                        batasSkorMinimal = 0.85; // Sangat Ketat, hanya menu dengan skor >= 0.85 (Level 1)
+                        if (tingkatGerd === 1) {
+                            if(statusIndicator) statusIndicator.innerText = "Sistem mengurutkan menu untuk Profil Anda: GERD Tingkat 1 (Ringan)";
+                            batasSkorMinimal = 0.0; 
+                        } else if (tingkatGerd === 2) {
+                            if(statusIndicator) statusIndicator.innerText = "Sistem memfilter menu untuk Profil Anda: GERD Tingkat 2 (Sedang)";
+                            batasSkorMinimal = 0.65; 
+                        } else if (tingkatGerd === 3) {
+                            if(statusIndicator) statusIndicator.innerText = "Sistem memfilter ketat menu untuk Profil Anda: GERD Tingkat 3 (Berat)";
+                            batasSkorMinimal = 0.85; 
+                        }
+
+                        tampilkanMenu(profilIdealAman, batasSkorMinimal);
+
+                    } else {
+                        window.location.href = "kuesioner.html";
                     }
-
-                    // Jalankan fungsi tampilkan menu dengan vektor target si user beserta batasannya
-                    tampilkanMenu(profilIdealAman, batasSkorMinimal);
-
-                } else {
-                    window.location.href = "kuesioner.html";
+                } catch(err) {
+                    console.error("Error mengambil profil:", err);
                 }
             } else {
                 window.location.href = "login.html";

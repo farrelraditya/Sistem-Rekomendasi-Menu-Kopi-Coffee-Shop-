@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Menu - Sistem Rekomendasi Kopi GERD</title>
     <link rel="stylesheet" href="styles.css">
-    
 </head>
 <body>
     <header id="header">
@@ -17,7 +16,7 @@
                 </div>
                 
                 <div class="header-actions">
-                    <a href="daftar_menu.html" class="btn btn-outline" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; border-color: var(--muted-foreground); color: var(--muted-foreground);">X</a>
+                    <a href="#" onclick="window.history.back(); return false;" class="btn btn-outline" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; border-color: var(--muted-foreground); color: var(--muted-foreground);">X</a>
                 </div>
             </div>
         </div>
@@ -33,13 +32,13 @@
                 <div class="detail-left">
                     
                     <div class="image-box">
-                        <div class="image-label">Gambar Coffee Shop A</div>
-                        <img id="img-shop" alt="Gambar Coffee Shop">
+                        <div class="image-label" id="label-shop">Gambar Coffee Shop</div>
+                        <img id="img-shop" alt="Gambar Coffee Shop" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=600">
                     </div>
 
                     <div class="image-box drink-img-box">
-                        <div class="image-label">Gambar Minuman </div>
-                        <img id="img-drink" src="https://images.unsplash.com/photo-1587080413959-06b859fb107d?q=80&w=1492&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Minuman">
+                        <div class="image-label" id="label-drink">Gambar Minuman</div>
+                        <img id="img-drink" alt="Minuman" src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600">
                     </div>
 
                 </div>
@@ -48,27 +47,27 @@
                     
                     <div class="info-card gerd-desc-card">
                         <h3>Penjelasan Tingkatan GERD</h3>
-                        <p id="text-gerd-desc">Minuman ini diklasifikasikan sebagai <strong>Sangat Aman</strong>. Karakteristik kimiawinya sangat sesuai untuk penderita GERD Tingkat 1. Berdasarkan literatur medis, komposisi ini menghasilkan asam yang sangat minim dan tidak memicu relaksasi katup lambung secara agresif, sehingga tidak mengganggu aktivitas sehari-hari.</p>
+                        <p id="text-gerd-desc">Sedang memuat data analisis medis...</p>
                     </div>
 
                     <div class="info-card comp-header-card">
                         <span class="comp-title">Komposisi</span>
-                        <span class="comp-badge level-1" id="badge-level">Tingkat GERD: 1</span>
+                        <span class="comp-badge" id="badge-level">Menghitung...</span>
                     </div>
 
                     <div class="info-card">
                         <ul class="comp-list">
                             <li>
                                 <strong>Jenis Kopi:</strong> 
-                                <span id="text-bean">Arabika (Kafein rendah: 0.94 - 1.59%)</span>
+                                <span id="text-bean">Memuat...</span>
                             </li>
                             <li>
                                 <strong>Teknik Roasting:</strong> 
-                                <span id="text-roast">Dark Roast (Memproduksi senyawa penghambat asam NMP)</span>
+                                <span id="text-roast">Memuat...</span>
                             </li>
                             <li>
                                 <strong>Teknik Seduh:</strong> 
-                                <span id="text-brew">Cold Brew (Rendah ekstraksi minyak iritan)</span>
+                                <span id="text-brew">Memuat...</span>
                             </li>
                         </ul>
                     </div>
@@ -86,33 +85,33 @@
     </footer>
 
     <script type="module">
-        // 1. Import Firebase dan Tools untuk Mengambil 1 Dokumen Spesifik (getDoc)
+        // 1. Import Firebase, Firestore, DAN AUTH (Yang sebelumnya tertinggal)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // 2. KONFIGURASI FIREBASE (AWAS: Masukkan kunci aslimu lagi di sini!)
+        // KONFIGURASI FIREBASE
         const firebaseConfig = {
-        apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
-        authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
-        projectId: "sistem-rekomendasi-kopi-gerd",
-        storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
-        messagingSenderId: "955125085378",
-        appId: "1:955125085378:web:d6211bb582ace6e557775b"
+            apiKey: "AIzaSyCqlUQaayGPfVIgZxr_tGuHgwr-h9YdXtI",
+            authDomain: "sistem-rekomendasi-kopi-gerd.firebaseapp.com",
+            projectId: "sistem-rekomendasi-kopi-gerd",
+            storageBucket: "sistem-rekomendasi-kopi-gerd.firebasestorage.app",
+            messagingSenderId: "955125085378",
+            appId: "1:955125085378:web:d6211bb582ace6e557775b"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app); // Inisialisasi Auth
 
-        // 3. Header Scroll Effect
+        // Header Scroll Effect
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 10) header.classList.add('scrolled');
             else header.classList.remove('scrolled');
         });
 
-        // ==========================================
-        // 4. ALGORITMA COSINE SIMILARITY
-        // ==========================================
+        // ALGORITMA COSINE SIMILARITY
         function hitungCosineSimilarity(vektorUser, vektorMenu) {
             let dotProduct = 0, magnitudeUser = 0, magnitudeMenu = 0;
             for (let i = 0; i < vektorUser.length; i++) {
@@ -127,93 +126,83 @@
         }
         const profilIdealAman = [1.0, 1.0, 1.0];
 
-        // ==========================================
-        // 5. FETCH 1 DOKUMEN SPESIFIK & RENDER KE LAYAR
-        // ==========================================
+        // FETCH 1 DOKUMEN SPESIFIK & RENDER KE LAYAR
         async function tampilkanDetailMenu() {
-            // Tangkap ID Menu dari URL
             const urlParams = new URLSearchParams(window.location.search);
             const idMenu = urlParams.get('id_menu');
+            const idTokoURL = urlParams.get('id_toko');
 
             if (!idMenu) {
-                document.getElementById('text-gerd-desc').innerText = "Error: Menu tidak ditemukan.";
+                document.getElementById('text-gerd-desc').innerText = "Error: Parameter ID Menu tidak ditemukan di URL.";
                 return;
             }
 
             try {
-                // Tarik HANYA 1 dokumen berdasarkan ID tersebut dari koleksi MenuKopi
                 const docRef = doc(db, "MenuKopi", idMenu);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    
-                    // Hitung Skor
                     const vektorMenu = [data.bobot_biji, data.bobot_roast, data.bobot_seduh];
                     const skor = hitungCosineSimilarity(profilIdealAman, vektorMenu);
 
-                    // --- UPDATE UI: NAMA & GAMBAR ---
-                    
-                    // KODE TAMBAHAN UNTUK MEMPERBAIKI TOMBOL X (BACK)
-                    const tombolBack = document.querySelector('.header-actions a.btn-outline');
-                    tombolBack.href = `daftar_menu.html?id=${encodeURIComponent(data.id_toko)}`;
-                    // ===============================================
+                    const namaTokoFinal = data.id_toko || idTokoURL || "Coffee Shop";
+                    document.getElementById('label-shop').innerText = namaTokoFinal;
 
-                    // Mengubah label gambar menjadi nama menu
-                    document.querySelector('.drink-img-box .image-label').innerText = data.nama_menu;
-                    // ... (kode sisanya tetap sama)
-
-                    // Mengatur gambar default berdasarkan toko
                     const gambarToko = {
-                    "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
-                    "Fore": "images_coffeeshop/Fore_Mansyur.jpeg",
-                    "Kopi Kenangan": "images_coffeeshop/KopKen_Multatuli.jpeg",
-                    "Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
+                        "Starbucks": "images_coffeeshop/Starbucks_Ismud.jpeg",
+                        "Fore": "images_coffeeshop/Fore_Mansyur.jpeg",
+                        "Kopi Kenangan": "images_coffeeshop/KopKen_Multatuli.jpeg",
+                        "Janji Jiwa": "images_coffeeshop/Janji_Jiwa_Karya_W.jpeg"
                     };
-                    if(gambarToko[data.id_toko]) document.getElementById('img-shop').src = gambarToko[data.id_toko];
+                    if (gambarToko[namaTokoFinal]) {
+                        document.getElementById('img-shop').src = gambarToko[namaTokoFinal];
+                    }
 
-                    // --- UPDATE UI: KOMPOSISI ---
+                    document.getElementById('label-drink').innerText = data.nama_menu;
+                    const imgDrink = document.getElementById('img-drink');
+                    imgDrink.src = data.url_gambar || "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=600";
+
                     document.getElementById('text-bean').innerText = data.jenis_biji;
                     document.getElementById('text-roast').innerText = data.teknik_roast;
                     document.getElementById('text-brew').innerText = data.metode_seduh;
 
-                    // --- LOGIKA PENENTUAN TINGKAT GERD ---
                     const badge = document.getElementById('badge-level');
                     const desc = document.getElementById('text-gerd-desc');
-                    const imgDrink = document.getElementById('img-drink');
-
-                    imgDrink.src = data.url_gambar; // Set gambar default dulu, nanti akan diubah sesuai tingkat GERD
 
                     if (skor >= 0.85) {
-                        // LEVEL 1 (SANGAT AMAN)
-                        badge.innerText = `Tingkat GERD: 1 (Skor: ${(skor*100).toFixed(1)}%)`;
+                        badge.innerText = `Tingkat GERD 1 (Aman) | Skor: ${(skor*100).toFixed(1)}%`;
                         badge.className = "comp-badge level-1";
-                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Sangat Aman</strong>. Karakteristik kimiawinya sangat sesuai untuk penderita GERD Tingkat 1. Komposisi ini menghasilkan asam yang sangat minim dan tidak memicu relaksasi katup lambung secara agresif.`;
-                    } 
-                    else if (skor >= 0.65) {
-                        // LEVEL 2 (WASPADA)
-                        badge.innerText = `Tingkat GERD: 2 (Skor: ${(skor*100).toFixed(1)}%)`;
+                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong style="color:#28a745;">Sangat Aman</strong>. Karakteristik kimiawinya sangat sesuai untuk penderita GERD Tingkat 1. Komposisi ini menghasilkan asam yang sangat minim dan tidak memicu relaksasi katup lambung secara agresif.`;
+                    } else if (skor >= 0.65) {
+                        badge.innerText = `Tingkat GERD 2 (Cukup Aman) | Skor: ${(skor*100).toFixed(1)}%`;
                         badge.className = "comp-badge level-2";
-                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Cukup Aman / Waspada</strong>. Cocok untuk penderita GERD Tingkat 1, namun penderita Tingkat 2 disarankan untuk membatasi konsumsinya.`;
-                    } 
-                    else {
-                        // LEVEL 3 (BERBAHAYA)
-                        badge.innerText = `Tingkat GERD: 3 (Skor: ${(skor*100).toFixed(1)}%)`;
+                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong style="color:#eab308;">Cukup Aman</strong>. Cocok untuk penderita GERD Tingkat 1, namun penderita Tingkat 2 disarankan untuk membatasi konsumsinya (tidak setiap hari).`;
+                    } else {
+                        badge.innerText = `Tingkat GERD 3 (Kurang Aman) | Skor: ${(skor*100).toFixed(1)}%`;
                         badge.className = "comp-badge level-3";
-                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong>Sangat Berbahaya</strong> untuk lambung. Sangat berisiko memicu sekresi asam berlebih dan melemahkan katup kerongkongan karena kombinasi komposisinya yang keras.`;
+                        desc.innerHTML = `Minuman <strong>${data.nama_menu}</strong> ini diklasifikasikan sebagai <strong style="color:#dc3545;">Kurang Aman</strong> untuk lambung. Sangat berpotensi memicu sekresi asam berlebih dan melemahkan katup kerongkongan karena kombinasi komposisinya yang kuat.`;
                     }
 
                 } else {
-                    document.getElementById('text-gerd-desc').innerText = "Data minuman tidak ditemukan di database.";
+                    document.getElementById('text-gerd-desc').innerText = "Data minuman tidak ditemukan di database Firestore.";
                 }
             } catch (error) {
                 console.error("Error mengambil detail menu:", error);
-                document.getElementById('text-gerd-desc').innerText = "Gagal memuat detail menu. Periksa koneksi internet.";
+                document.getElementById('text-gerd-desc').innerText = "Gagal memuat detail menu. Periksa koneksi internet atau izin akses.";
             }
         }
 
-        // Eksekusi fungsi!
-        tampilkanDetailMenu();
+        // PENGECEKAN LOGIN SEBELUM MENARIK DATA
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Jika user berhasil terdeteksi login, baru tarik datanya
+                tampilkanDetailMenu();
+            } else {
+                // Jika belum login, arahkan ke halaman login
+                window.location.href = "login.html";
+            }
+        });
     </script>
 </body>
 </html>
