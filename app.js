@@ -102,6 +102,22 @@ if (formRegister) {
     });
 }
 
+// ==========================================
+// FUNGSI BANTUAN: MENDAPATKAN WAKTU INDONESIA
+// ==========================================
+const getWaktuIndonesia = () => {
+    const sekarang = new Date();
+    const formatHari = new Intl.DateTimeFormat('id-ID', { weekday: 'long' });
+    const formatBulan = new Intl.DateTimeFormat('id-ID', { month: 'long' });
+
+    return {
+        hari: formatHari.format(sekarang),
+        tanggal: sekarang.getDate(),
+        bulan: formatBulan.format(sekarang),
+        tahun: sekarang.getFullYear(),
+        waktu: sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
+    };
+};
 
 // ==========================================
 // C. LOGIKA HALAMAN KUESIONER GERD
@@ -133,14 +149,22 @@ if (formKuesioner) {
 
         btnHitung.innerText = "Menyimpan Profil...";
 
+        // 1. Panggil fungsi waktunya di sini sebelum menyimpan ke Firebase
+        const dataWaktu = getWaktuIndonesia();
+
         // Cek siapa user yang sedang aktif mengisi kuesioner ini
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
-                    // Update data tingkatGerd di Firestore
+                    // 2. Update data profil ke Firestore beserta waktu
                     await setDoc(doc(db, "Users", user.uid), {
                         tingkatGerd: levelGerd,
-                        skorMentah: totalSkor
+                        skorMentah: totalSkor,
+                        hari: dataWaktu.hari,
+                        tanggal: dataWaktu.tanggal,
+                        bulan: dataWaktu.bulan,
+                        tahun: dataWaktu.tahun,
+                        waktu: dataWaktu.waktu
                     }, { merge: true }); // merge: true memastikan nama & email tidak terhapus
 
                     alert(`Profil Tersimpan! Tingkat Toleransi Lambung Anda berada di Level ${levelGerd}.`);
